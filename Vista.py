@@ -119,10 +119,12 @@ def blue_amoled_mode():
     boton_clean.config(bg="#252440", fg="white", highlightbackground="white")
     
 
-#variable operando que sirve para mostrar la cifra de la operacion que se está realizando
+#Variables globales
 operando = "0"
 n1 = ""
 operaciones = ""
+historial = ""
+resultado_presionado = 0
 
 #actualizaciones del operando según el boton al que se le haga click
 def one():
@@ -203,7 +205,11 @@ def actualizar_operando():
     linea_de_operaciones.config(text=operando)
 
 def actualizar_historial():
-    historial_de_operaciones.config(text=operaciones)
+    global historial, resultado_presionado  
+    if resultado_presionado > 0:
+        historial = historial[resultado_presionado::]
+        resultado_presionado = 0
+    historial_de_operaciones.config(text=historial)
 
 def clean():
     global operando
@@ -233,7 +239,7 @@ def resultado(update):
     cad_num = ""
     res = ""
     sqrt = False
-    global operaciones,operando, n1
+    global operaciones,operando, n1, historial, resultado_presionado
     
     for i in range(len(operaciones)):
         if operaciones[i] not in "+-xr/^%" and operaciones[i] in "1234567890." or (i == 0 and operaciones[i] == "-"):
@@ -241,7 +247,7 @@ def resultado(update):
         elif operaciones[i:len(operaciones)] == "sqrt":
             sqrt = True
             break
-        else: 
+        else:
             break
 
     if sqrt == True:
@@ -280,25 +286,26 @@ def resultado(update):
             res = cad_num
         
     if update == True:
+        historial += operando
         if(is_int(res) == False):
             operando = res
         else:
             operando = res[:res.find(".")]
+        actualizar_historial()
+        resultado_presionado += len(historial)
         actualizar_operando()
-        n1 = operaciones = ""
 
-    
+        n1 = operaciones = ""   
     return res
 
 def sumar():
-    global n1
-    global operaciones
-    global operando
+    global n1, operando, operaciones, historial
+    historial += operando+"+"
 
     if(n1 == ""):
         n1 = operando
         operaciones += n1+"+"
-    elif(n1 != "" and operando != ""):   
+    elif(n1 != "" and operando != ""): 
         n1 = resultado(False)
         operaciones = n1+"+" 
     operando = "0"
@@ -306,9 +313,8 @@ def sumar():
     actualizar_operando()
 
 def restar():
-    global n1
-    global operaciones
-    global operando
+    global n1, operando, operaciones, historial
+    historial += operando+"-"
 
     if(n1 == ""):
         n1 = operando
@@ -321,9 +327,8 @@ def restar():
     actualizar_operando()
 
 def multiplicar():
-    global n1
-    global operaciones
-    global operando
+    global n1, operando, operaciones, historial
+    historial += operando+"x"
 
     if(n1 == ""):
         n1 = operando
@@ -336,9 +341,8 @@ def multiplicar():
     actualizar_operando()
 
 def dividir():
-    global n1
-    global operaciones
-    global operando
+    global n1, operando, operaciones, historial
+    historial += operando+"/"
 
     if(n1 == ""):
         n1 = operando
@@ -347,31 +351,29 @@ def dividir():
     elif(n1 != "" and operando != ""):
         n1 = resultado(False) 
         operaciones = n1+"/" 
-        operando = "0"
+    operando = "0"
     actualizar_historial()
     actualizar_operando()
 
 def potencia():
-    global n1
-    global operaciones
-    global operando
+    global n1, operando, operaciones, historial
+    historial += operando+"^"
 
     if(n1 == ""):
         n1 = operando
         operaciones += n1+"^"
         operando = "0"
     elif(n1 != "" and operando != ""):
-        operaciones += "" 
+        operaciones += "^" 
         n1 = resultado(False)
         operaciones = n1
-        operando = "0"  
+    operando = "0"  
     actualizar_historial()      
     actualizar_operando()
 
 def porcentaje():
-    global n1
-    global operaciones
-    global operando
+    global n1, operando, operaciones, historial
+    historial += operando+"%"
 
     if(n1 == ""):
         n1 = operando
@@ -381,14 +383,13 @@ def porcentaje():
         operaciones += "%" 
         n1 = resultado(False)
         operaciones = n1
-        operando = "0"
+    operando = "0"
     actualizar_historial()
     actualizar_operando()
 
 def raiz_cuadrada():
-    global n1
-    global operaciones
-    global operando
+    global n1, operando, operaciones, historial
+    historial += f"sqrt({operando})"
 
     if(n1 == ""):
         n1 = operando
@@ -398,8 +399,8 @@ def raiz_cuadrada():
         operaciones += "sqrt" 
         n1 = resultado(False)
         operaciones = n1
-        operando = "0" 
-    actualizar_historial()       
+    operando = "0" 
+    actualizar_historial()
     actualizar_operando()
 
 #declaracion de frames para colocar los botones y los labels
