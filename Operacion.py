@@ -1,3 +1,6 @@
+from cmath import sqrt
+
+
 class Operacion():    
         
     def sumar(n1,n2):    
@@ -18,3 +21,8 @@ class Operacion():
     def porcentaje(n1,n2):
         return n1*n2/100
     
+    def raiz_cuadrada(n1):
+        return sqrt(n1)
+    
+    def raiz(n1,n2):
+        return n1**(1/n2)

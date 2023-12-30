@@ -6,7 +6,7 @@ from Operacion import *
 root = Tk()
 root.iconbitmap("icono_calculadora.ico")
 root.title("Calculadora")
-#root.resizable(0,0)
+root.resizable(0,0)
 
 #Crear una barra menú
 menuBar = Menu(root)
@@ -34,8 +34,10 @@ def light_mode():
     marco_numeros.config(bg="white", highlightbackground="black",highlightthickness=1)
 
     linea_de_operaciones.config(bg="white", fg="black", highlightbackground="gray")
+    historial_de_operaciones.config(bg="white", fg="black", highlightbackground="gray")
 
-    boton_porcentaje.config(bg="black", fg="white", highlightbackground="gray")   
+    boton_porcentaje.config(bg="black", fg="white", highlightbackground="gray")
+    boton_raiz_cuadrada.config(bg="black", fg="white", highlightbackground="gray")   
     boton_potencia.config(bg="black", fg="white", highlightbackground="gray")   
     boton_division.config(bg="black", fg="white", highlightbackground="gray")
     boton_multiplicacion.config(bg="black", fg="white", highlightbackground="gray")
@@ -62,7 +64,9 @@ def dark_mode():
     marco_numeros.config(bg="black", highlightbackground="white",highlightthickness=1)
 
     linea_de_operaciones.config(bg="black", fg="white", highlightbackground="white")
+    historial_de_operaciones.config(bg="black", fg="white", highlightbackground="white")
 
+    boton_raiz_cuadrada.config(bg="gray", fg="white", highlightbackground="white")   
     boton_porcentaje.config(bg="gray", fg="white", highlightbackground="white")   
     boton_potencia.config(bg="gray", fg="white", highlightbackground="white")   
     boton_division.config(bg="gray", fg="white", highlightbackground="white")
@@ -90,7 +94,9 @@ def blue_amoled_mode():
     marco_numeros.config(bg="#252440", highlightbackground="white", highlightthickness=1)
 
     linea_de_operaciones.config(bg="#252440", fg="white", highlightbackground="white")
+    historial_de_operaciones.config(bg="#252440", fg="white", highlightbackground="white")
 
+    boton_raiz_cuadrada.config(bg="#3CB371", fg="white", highlightbackground="white")
     boton_porcentaje.config(bg="#3CB371", fg="white", highlightbackground="white")   
     boton_potencia.config(bg="#3CB371", fg="white", highlightbackground="white")   
     boton_division.config(bg="#3CB371", fg="white", highlightbackground="white")
@@ -196,6 +202,9 @@ def double_zero():
 def actualizar_operando():
     linea_de_operaciones.config(text=operando)
 
+def actualizar_historial():
+    historial_de_operaciones.config(text=operaciones)
+
 def clean():
     global operando
     global operaciones
@@ -219,17 +228,24 @@ def is_int(num):
             if num[i] != "0":
                 return False
     return True
-    
+
 def resultado(update):
     cad_num = ""
     res = ""
+    sqrt = False
     global operaciones,operando, n1
     
     for i in range(len(operaciones)):
-        if operaciones[i] not in "+-x/^%":
+        if operaciones[i] not in "+-xr/^%" and operaciones[i] in "1234567890." or (i == 0 and operaciones[i] == "-"):
             cad_num += operaciones[i]
+        elif operaciones[i:len(operaciones)] == "sqrt":
+            sqrt = True
+            break
         else: 
             break
+
+    if sqrt == True:
+        res = str(Operacion.raiz_cuadrada(float(cad_num)).real)
 
     if '%' in operaciones:
         porcentage = str(Operacion.porcentaje(float(cad_num),float(operando)))
@@ -260,7 +276,7 @@ def resultado(update):
                 return ""
         elif '^' in operaciones:
             res = str(Operacion.potencia(float(cad_num),float(operando)))
-        else:
+        elif sqrt == False:
             res = cad_num
         
     if update == True:
@@ -271,6 +287,7 @@ def resultado(update):
         actualizar_operando()
         n1 = operaciones = ""
 
+    
     return res
 
 def sumar():
@@ -285,6 +302,7 @@ def sumar():
         n1 = resultado(False)
         operaciones = n1+"+" 
     operando = "0"
+    actualizar_historial()
     actualizar_operando()
 
 def restar():
@@ -299,6 +317,7 @@ def restar():
         n1 = resultado(False)
         operaciones = n1+"-" 
     operando = "0"
+    actualizar_historial()
     actualizar_operando()
 
 def multiplicar():
@@ -313,6 +332,7 @@ def multiplicar():
         n1 = resultado(False)
         operaciones = n1+"x" 
     operando = "0"
+    actualizar_historial()
     actualizar_operando()
 
 def dividir():
@@ -328,6 +348,7 @@ def dividir():
         n1 = resultado(False) 
         operaciones = n1+"/" 
         operando = "0"
+    actualizar_historial()
     actualizar_operando()
 
 def potencia():
@@ -340,9 +361,11 @@ def potencia():
         operaciones += n1+"^"
         operando = "0"
     elif(n1 != "" and operando != ""):
-        n1 = resultado(False) 
-        operaciones = n1+"^" 
-        operando = "0"
+        operaciones += "" 
+        n1 = resultado(False)
+        operaciones = n1
+        operando = "0"  
+    actualizar_historial()      
     actualizar_operando()
 
 def porcentaje():
@@ -359,8 +382,25 @@ def porcentaje():
         n1 = resultado(False)
         operaciones = n1
         operando = "0"
+    actualizar_historial()
     actualizar_operando()
 
+def raiz_cuadrada():
+    global n1
+    global operaciones
+    global operando
+
+    if(n1 == ""):
+        n1 = operando
+        operaciones += n1+"sqrt"
+        operando = "0"
+    elif(n1 != "" and operando != ""):
+        operaciones += "sqrt" 
+        n1 = resultado(False)
+        operaciones = n1
+        operando = "0" 
+    actualizar_historial()       
+    actualizar_operando()
 
 #declaracion de frames para colocar los botones y los labels
 marco_resultado = Frame(root,relief="solid",borderwidth=2,bg="#252440", highlightbackground="white", highlightthickness=1)
@@ -382,8 +422,11 @@ marco_numeros.grid_rowconfigure(0, weight=1)
 marco_numeros.grid_columnconfigure(0, weight=1)
 
 #Label de linea_de_operaciones, donde se colocaran totwo los botones de operaciones aritméticas básicas
-linea_de_operaciones = Label(marco_resultado,text=operando, font=("Curier 10",30),bg="#252440", fg="white", highlightbackground="white")
-linea_de_operaciones.pack(side=RIGHT)
+historial_de_operaciones = Label(marco_resultado, font=("Curier 10",25),bg="#252440", fg="white", highlightbackground="white")
+historial_de_operaciones.pack(anchor="e")
+
+linea_de_operaciones = Label(marco_resultado, text=operando,font=("Curier 10",30),height=2,bg="#252440", fg="white", highlightbackground="white")
+linea_de_operaciones.pack(anchor="e")
 
 #botones de operaciones aritméticas básicas
 
@@ -407,6 +450,9 @@ boton_resultado.pack(anchor="e")
 
 boton_porcentaje = Button(marco_operaciones_advnc, text="%", font=("Curier 10", 15),height=2,width=8,command=porcentaje,bg="#3CB371", fg="white", highlightbackground="white")
 boton_porcentaje.pack(anchor="w")
+
+boton_raiz_cuadrada = Button(marco_operaciones_advnc, text="Sqrt", font=("Curier 10", 15),height=2,width=8,command=raiz_cuadrada,bg="#3CB371", fg="white", highlightbackground="white")
+boton_raiz_cuadrada.pack(anchor="w")
 
 #botones de números
 
