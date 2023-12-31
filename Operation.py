@@ -1,6 +1,4 @@
-from cmath import sqrt
-
-
+from cmath import sqrt, pi, e
 class Operation():    
         
     def sum(n1:float,n2:float) -> float: 

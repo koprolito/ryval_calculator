@@ -1,5 +1,4 @@
-from View import *
-from Operation import *
+from Controller import *
 import ctypes
 
 #Get the configuration of the OS
@@ -15,7 +14,7 @@ if theme_active.value:
 else:
     light_mode()
 
-root.config(menu=menu_bar)
-root.update()
-root.geometry(root.geometry())
-root.mainloop()
+ui.root.config(menu=ui.menu_bar)
+ui.root.update()
+ui.root.geometry(ui.root.geometry())
+ui.root.mainloop()
