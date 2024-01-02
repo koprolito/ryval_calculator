@@ -10,9 +10,9 @@ ctypes.windll.user32.SystemParametersInfoW(SPI_GETTHEMEACTIVE, 0, ctypes.byref(t
 #Note: it still does not detect the exact configuration of the OS. It always
 #sets dark mode by default
 if theme_active.value:
-    dark_mode()
+    ui.dark_mode()
 else:
-    light_mode()
+    ui.light_mode()
 
 ui.root.config(menu=ui.menu_bar)
 ui.root.update()

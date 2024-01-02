@@ -27,116 +27,10 @@ def update_history():
 #It will be set as the text shown in the operations_label
 ui.operations_label.config(text=main_operator)
 
-#Functions for changing the UI's color mode
-def light_mode():
-    '''Sets the UI's components to lighter colors'''
-    ui.result_frame.config(bg="white", highlightbackground="black",highlightthickness=1)    
-    ui.operations_frame.config(bg="white", highlightbackground="black",highlightthickness=1)
-    ui.operations_frame_advnc.config(bg="white", highlightbackground="black",highlightthickness=1)
-    ui.numbers_frame.config(bg="white", highlightbackground="black",highlightthickness=1)
-
-    ui.operations_label.config(bg="white", fg="black", highlightbackground="gray")
-    ui.operations_history_label.config(bg="white", fg="black", highlightbackground="gray")
-
-    ui.porcentage_button.config(bg="black", fg="white", highlightbackground="gray")
-    ui.sqrt_button.config(bg="black", fg="white", highlightbackground="gray")   
-    ui.power_button.config(bg="black", fg="white", highlightbackground="gray")   
-    ui.division_button.config(bg="black", fg="white", highlightbackground="gray")
-    ui.multiplication_button.config(bg="black", fg="white", highlightbackground="gray")
-    ui.substraction_button.config(bg="black", fg="white", highlightbackground="gray")
-    ui.sum_button.config(bg="black", fg="white", highlightbackground="gray")
-    ui.result_button.config(bg="black", fg="white", highlightbackground="gray")
-
-    ui.decimal_button.config(bg="white", fg="black", highlightbackground="gray")
-    ui.zero_button.config(bg="white", fg="black", highlightbackground="gray")
-    ui.double_zero_button.config(bg="white", fg="black", highlightbackground="gray")
-    ui.one_button.config(bg="white", fg="black", highlightbackground="gray")
-    ui.two_button.config(bg="white", fg="black", highlightbackground="gray")
-    ui.three_button.config(bg="white", fg="black", highlightbackground="gray")
-    ui.four_button.config(bg="white", fg="black", highlightbackground="gray")
-    ui.five_button.config(bg="white", fg="black", highlightbackground="gray")
-    ui.six_button.config(bg="white", fg="black", highlightbackground="gray")
-    ui.seven_button.config(bg="white", fg="black", highlightbackground="gray")
-    ui.eight_button.config(bg="white", fg="black", highlightbackground="gray")
-    ui.nine_button.config(bg="white", fg="black", highlightbackground="gray")
-    ui.pi_button.config(bg="white", fg="black", highlightbackground="gray")
-    ui.euler_button.config(bg="white", fg="black", highlightbackground="gray")
-    ui.clean_button.config(bg="white", fg="black", highlightbackground="gray")
-
-def dark_mode():
-    '''Sets the UI's components to darker colors'''
-    ui.result_frame.config(bg="black", highlightbackground="white",highlightthickness=1)    
-    ui.operations_frame.config(bg="black", highlightbackground="white",highlightthickness=1)
-    ui.operations_frame_advnc.config(bg="black", highlightbackground="white",highlightthickness=1)
-    ui.numbers_frame.config(bg="black", highlightbackground="white",highlightthickness=1)
-
-    ui.operations_label.config(bg="black", fg="white", highlightbackground="white")
-    ui.operations_history_label.config(bg="black", fg="white", highlightbackground="white")
-
-    ui.sqrt_button.config(bg="gray", fg="white", highlightbackground="white")   
-    ui.porcentage_button.config(bg="gray", fg="white", highlightbackground="white")   
-    ui.power_button.config(bg="gray", fg="white", highlightbackground="white")   
-    ui.division_button.config(bg="gray", fg="white", highlightbackground="white")
-    ui.multiplication_button.config(bg="gray", fg="white", highlightbackground="white")
-    ui.substraction_button.config(bg="gray", fg="white", highlightbackground="white")
-    ui.sum_button.config(bg="gray", fg="white", highlightbackground="white")
-    ui.result_button.config(bg="gray", fg="white", highlightbackground="white")
-
-    ui.decimal_button.config(bg="black", fg="white", highlightbackground="white")
-    ui.zero_button.config(bg="black", fg="white", highlightbackground="white")
-    ui.double_zero_button.config(bg="black", fg="white", highlightbackground="white")
-    ui.one_button.config(bg="black", fg="white", highlightbackground="white")
-    ui.two_button.config(bg="black", fg="white", highlightbackground="white")
-    ui.three_button.config(bg="black", fg="white", highlightbackground="white")
-    ui.four_button.config(bg="black", fg="white", highlightbackground="white")
-    ui.five_button.config(bg="black", fg="white", highlightbackground="white")
-    ui.six_button.config(bg="black", fg="white", highlightbackground="white")
-    ui.seven_button.config(bg="black", fg="white", highlightbackground="white")
-    ui.eight_button.config(bg="black", fg="white", highlightbackground="white")
-    ui.nine_button.config(bg="black", fg="white", highlightbackground="white")
-    ui.pi_button.config(bg="black", fg="white", highlightbackground="white")
-    ui.euler_button.config(bg="black", fg="white", highlightbackground="white")
-    ui.clean_button.config(bg="black", fg="white", highlightbackground="white")
-
-def blue_amoled_mode():
-    '''Sets the UI's components to blue amoled based colors'''
-    ui.result_frame.config(bg="#252440", highlightbackground="white", highlightthickness=1)    
-    ui.operations_frame.config(bg="#252440", highlightbackground="white", highlightthickness=1)
-    ui.operations_frame_advnc.config(bg="#252440", highlightbackground="white", highlightthickness=1)
-    ui.numbers_frame.config(bg="#252440", highlightbackground="white", highlightthickness=1)
-
-    ui.operations_label.config(bg="#252440", fg="white", highlightbackground="white")
-    ui.operations_history_label.config(bg="#252440", fg="white", highlightbackground="white")
-
-    ui.sqrt_button.config(bg="#3CB371", fg="white", highlightbackground="white")
-    ui.porcentage_button.config(bg="#3CB371", fg="white", highlightbackground="white")   
-    ui.power_button.config(bg="#3CB371", fg="white", highlightbackground="white")   
-    ui.division_button.config(bg="#3CB371", fg="white", highlightbackground="white")
-    ui.multiplication_button.config(bg="#3CB371", fg="white", highlightbackground="white")
-    ui.substraction_button.config(bg="#3CB371", fg="white", highlightbackground="white")
-    ui.sum_button.config(bg="#3CB371", fg="white", highlightbackground="white")
-    ui.result_button.config(bg="#3CB371", fg="white", highlightbackground="white")
-
-    ui.decimal_button.config(bg="#252440", fg="white", highlightbackground="white")
-    ui.zero_button.config(bg="#252440", fg="white", highlightbackground="white")
-    ui.double_zero_button.config(bg="#252440", fg="white", highlightbackground="white")
-    ui.one_button.config(bg="#252440", fg="white", highlightbackground="white")
-    ui.two_button.config(bg="#252440", fg="white", highlightbackground="white")
-    ui.three_button.config(bg="#252440", fg="white", highlightbackground="white")
-    ui.four_button.config(bg="#252440", fg="white", highlightbackground="white")
-    ui.five_button.config(bg="#252440", fg="white", highlightbackground="white")
-    ui.six_button.config(bg="#252440", fg="white", highlightbackground="white")
-    ui.seven_button.config(bg="#252440", fg="white", highlightbackground="white")
-    ui.eight_button.config(bg="#252440", fg="white", highlightbackground="white")
-    ui.nine_button.config(bg="#252440", fg="white", highlightbackground="white")
-    ui.pi_button.config(bg="#252440", fg="white", highlightbackground="white")
-    ui.euler_button.config(bg="#252440", fg="white", highlightbackground="white")
-    ui.clean_button.config(bg="#252440", fg="white", highlightbackground="white")
-
 #Add options to the theme_menu. Each option is a different theme for the view
-ui.theme_menu.add_command(label="Light mode", command=lambda:light_mode())
-ui.theme_menu.add_command(label="Dark mode", command=lambda:dark_mode())
-ui.theme_menu.add_command(label="Blue AMOLED mode", command=lambda:blue_amoled_mode())
+ui.theme_menu.add_command(label="Light mode", command=lambda:ui.light_mode())
+ui.theme_menu.add_command(label="Dark mode", command=lambda:ui.dark_mode())
+ui.theme_menu.add_command(label="Blue AMOLED mode", command=lambda:ui.blue_amoled_mode())
 
 #Validations for border cases
 def validate_indetermination() -> bool:
@@ -348,14 +242,14 @@ def result(update: bool) -> str:
 
 #Logic for the interaction of the buttons with the interface
 def button_clicked(c: str):
-    global main_operator, pressed_result, n1
+    global main_operator, pressed_result, secondary_operator, history, operations
     #Make sure the button clicked is a number
     if c.isdigit() or c == '.' or c == 'pi' or c == 'e':
         #If the result button has been already pressed and the button pressed recently is
         #not an aritmetical operation
         if pressed_result > 0:
             main_operator = '0'
-            n1 = ''
+            secondary_operator = ''
             update_history()
         if(main_operator == '0' and c != '0' and c != '00' and c != '.'):
             if c == 'pi':
@@ -401,6 +295,37 @@ def button_clicked(c: str):
             porcentage()
         elif c == '=':
             result(True)
+        elif c == 'negate':
+            if(main_operator != '0' and main_operator != ''):
+                if(main_operator[0] == '-'):
+                    main_operator = main_operator[1::]
+                else:
+                    main_operator = '-'+main_operator
+                update_main_operator()
+        elif c == 'sqrd':
+            if operations != "":
+                main_operator = result(False)
+                if(is_int(main_operator) != False):                
+                    main_operator = main_operator[:main_operator.find(".")]
+            operations = history = main_operator+'^'
+            main_operator = '2'
+            result(True)
+        elif c == '1/x':
+            aux = operations
+            operations = '1/'
+            history += '1/'+main_operator
+            history_aux = history
+            main_operator = result(False)
+            if(is_int(main_operator) != False):                
+                    main_operator = main_operator[:main_operator.find(".")]
+            operations = aux
+            aux = main_operator            
+            result(True)
+            history = history_aux
+            pressed_result = 0
+            update_history()
+            history = ''
+
 
 ui.decimal_button.config(command=lambda:button_clicked('.'))
 ui.zero_button.config(command=lambda:button_clicked('0'))
@@ -424,6 +349,9 @@ ui.division_button.config(command=lambda:button_clicked('/'))
 ui.porcentage_button.config(command=lambda:button_clicked('%'))
 ui.power_button.config(command=lambda:button_clicked('^'))
 ui.sqrt_button.config(command=lambda:button_clicked('sqrt'))
+ui.one_divided_by_button.config(command=lambda:button_clicked('1/x'))
+ui.negative_button.config(command=lambda:button_clicked('negate'))
+ui.squared_button.config(command=lambda:button_clicked('sqrd'))
 ui.result_button.config(command=lambda:button_clicked('='))
 
 def clean():
@@ -439,7 +367,7 @@ ui.clean_button.config(command=clean)
 
 #Logic for the interaction of the keyboard and the UI
 def key_pressed(event):
-    global main_operator, pressed_result, n1
+    global main_operator, pressed_result, secondary_operator
     #Make sure the key pressed is not the Shift key
     if event.keysym == 'Shift_L' or event.keysym == 'Shift_R':
         return
@@ -449,7 +377,7 @@ def key_pressed(event):
         #not an aritmetical operation
         if pressed_result > 0:
             main_operator = '0'
-            n1 = ''
+            secondary_operator = ''
             update_history()
         #Add a number to the UI's operator
         if main_operator == '0':
