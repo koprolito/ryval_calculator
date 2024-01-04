@@ -111,117 +111,56 @@ class Standard_Calculator_View(Default_View):
         self.clean_button = Button(self.numbers_frame, text="C", font=("Curier 10", 15),height=2,width=8)
         self.clean_button.grid(row=0,column=2, sticky='nsew')
 
+        #Add options to the theme_menu. Each option is a different theme for the view
+        self.theme_menu.add_command(label="Light mode", command=lambda:self.change_mode(
+            "white","black",1,"white","black", "black", "white", "white", "black", "gray"
+        ))
+        self.theme_menu.add_command(label="Dark mode", command=lambda:self.change_mode(
+            "black","white",1,"black","white", "gray", "white", "black", "white", "white"
+        ))
+        self.theme_menu.add_command(label="Blue AMOLED mode", command=lambda:self.change_mode(
+            "#252440", "white", 1, "#252440", "white", "#3CB371", "white", "#252440", "white", "white"
+        ))
+
     #Functions for changing the UI's color mode
-    def light_mode(self):
+    def change_mode(self, bg_color_frame: str, highlightbackground_frame:str, highlightthickness_frame: int,
+                   bg_color_label: str, foreground_color_label: str, 
+                   bg_color_op_button: str, foreground_color_op_button: str, 
+                   bg_color_num_button: str, foreground_color_num_button: str,
+                   highlightbackground: str):
         '''Sets the UI's components to lighter colors'''
-        self.result_frame.config(bg="white", highlightbackground="black",highlightthickness=1)    
-        self.operations_frame.config(bg="white", highlightbackground="black",highlightthickness=1)
-        self.operations_frame_advnc.config(bg="white", highlightbackground="black",highlightthickness=1)
-        self.numbers_frame.config(bg="white", highlightbackground="black",highlightthickness=1)
+        self.result_frame.config(bg=bg_color_frame, highlightbackground=highlightbackground_frame,highlightthickness=highlightthickness_frame)    
+        self.operations_frame.config(bg=bg_color_frame, highlightbackground=highlightbackground_frame,highlightthickness=highlightthickness_frame)
+        self.operations_frame_advnc.config(bg=bg_color_frame, highlightbackground=highlightbackground_frame,highlightthickness=highlightthickness_frame)
+        self.numbers_frame.config(bg=bg_color_frame, highlightbackground=highlightbackground_frame,highlightthickness=highlightthickness_frame)
 
-        self.operations_label.config(bg="white", fg="black", highlightbackground="gray")
-        self.operations_history_label.config(bg="white", fg="black", highlightbackground="gray")
+        self.operations_label.config(bg=bg_color_label, fg=foreground_color_label, highlightbackground=highlightbackground)
+        self.operations_history_label.config(bg=bg_color_label, fg=foreground_color_label, highlightbackground=highlightbackground)
 
-        self.porcentage_button.config(bg="black", fg="white", highlightbackground="gray")
-        self.sqrt_button.config(bg="black", fg="white", highlightbackground="gray")  
-        self.squared_button.config(bg="black", fg="white", highlightbackground="gray")
-        self.one_divided_by_button.config(bg="black", fg="white", highlightbackground="gray")
-        self.power_button.config(bg="black", fg="white", highlightbackground="gray") 
-        self.negative_button.config(bg="black", fg="white", highlightbackground="gray")
-        self.division_button.config(bg="black", fg="white", highlightbackground="gray")
-        self.multiplication_button.config(bg="black", fg="white", highlightbackground="gray")
-        self.substraction_button.config(bg="black", fg="white", highlightbackground="gray")
-        self.sum_button.config(bg="black", fg="white", highlightbackground="gray")
-        self.result_button.config(bg="black", fg="white", highlightbackground="gray")
+        self.porcentage_button.config(bg=bg_color_op_button, fg=foreground_color_op_button, highlightbackground=highlightbackground)
+        self.sqrt_button.config(bg=bg_color_op_button, fg=foreground_color_op_button, highlightbackground=highlightbackground)  
+        self.squared_button.config(bg=bg_color_op_button, fg=foreground_color_op_button, highlightbackground=highlightbackground)
+        self.one_divided_by_button.config(bg=bg_color_op_button, fg=foreground_color_op_button, highlightbackground=highlightbackground)
+        self.power_button.config(bg=bg_color_op_button, fg=foreground_color_op_button, highlightbackground=highlightbackground) 
+        self.negative_button.config(bg=bg_color_op_button, fg=foreground_color_op_button, highlightbackground=highlightbackground)
+        self.division_button.config(bg=bg_color_op_button, fg=foreground_color_op_button, highlightbackground=highlightbackground)
+        self.multiplication_button.config(bg=bg_color_op_button, fg=foreground_color_op_button, highlightbackground=highlightbackground)
+        self.substraction_button.config(bg=bg_color_op_button, fg=foreground_color_op_button, highlightbackground=highlightbackground)
+        self.sum_button.config(bg=bg_color_op_button, fg=foreground_color_op_button, highlightbackground=highlightbackground)
+        self.result_button.config(bg=bg_color_op_button, fg=foreground_color_op_button, highlightbackground=highlightbackground)
 
-        self.decimal_button.config(bg="white", fg="black", highlightbackground="gray")
-        self.zero_button.config(bg="white", fg="black", highlightbackground="gray")
-        self.double_zero_button.config(bg="white", fg="black", highlightbackground="gray")
-        self.one_button.config(bg="white", fg="black", highlightbackground="gray")
-        self.two_button.config(bg="white", fg="black", highlightbackground="gray")
-        self.three_button.config(bg="white", fg="black", highlightbackground="gray")
-        self.four_button.config(bg="white", fg="black", highlightbackground="gray")
-        self.five_button.config(bg="white", fg="black", highlightbackground="gray")
-        self.six_button.config(bg="white", fg="black", highlightbackground="gray")
-        self.seven_button.config(bg="white", fg="black", highlightbackground="gray")
-        self.eight_button.config(bg="white", fg="black", highlightbackground="gray")
-        self.nine_button.config(bg="white", fg="black", highlightbackground="gray")
-        self.pi_button.config(bg="white", fg="black", highlightbackground="gray")
-        self.euler_button.config(bg="white", fg="black", highlightbackground="gray")
-        self.clean_button.config(bg="white", fg="black", highlightbackground="gray")
-
-    def dark_mode(self):
-        '''Sets the UI's components to darker colors'''
-        self.result_frame.config(bg="black", highlightbackground="white",highlightthickness=1)    
-        self.operations_frame.config(bg="black", highlightbackground="white",highlightthickness=1)
-        self.operations_frame_advnc.config(bg="black", highlightbackground="white",highlightthickness=1)
-        self.numbers_frame.config(bg="black", highlightbackground="white",highlightthickness=1)
-
-        self.operations_label.config(bg="black", fg="white", highlightbackground="white")
-        self.operations_history_label.config(bg="black", fg="white", highlightbackground="white")
-
-        self.sqrt_button.config(bg="gray", fg="white", highlightbackground="white")   
-        self.porcentage_button.config(bg="gray", fg="white", highlightbackground="white")   
-        self.squared_button.config(bg="gray", fg="white", highlightbackground="white")
-        self.one_divided_by_button.config(bg="gray", fg="white", highlightbackground="white")
-        self.power_button.config(bg="gray", fg="white", highlightbackground="white")
-        self.negative_button.config(bg="gray", fg="white", highlightbackground="white")
-        self.division_button.config(bg="gray", fg="white", highlightbackground="white")
-        self.multiplication_button.config(bg="gray", fg="white", highlightbackground="white")
-        self.substraction_button.config(bg="gray", fg="white", highlightbackground="white")
-        self.sum_button.config(bg="gray", fg="white", highlightbackground="white")
-        self.result_button.config(bg="gray", fg="white", highlightbackground="white")
-
-        self.decimal_button.config(bg="black", fg="white", highlightbackground="white")
-        self.zero_button.config(bg="black", fg="white", highlightbackground="white")
-        self.double_zero_button.config(bg="black", fg="white", highlightbackground="white")
-        self.one_button.config(bg="black", fg="white", highlightbackground="white")
-        self.two_button.config(bg="black", fg="white", highlightbackground="white")
-        self.three_button.config(bg="black", fg="white", highlightbackground="white")
-        self.four_button.config(bg="black", fg="white", highlightbackground="white")
-        self.five_button.config(bg="black", fg="white", highlightbackground="white")
-        self.six_button.config(bg="black", fg="white", highlightbackground="white")
-        self.seven_button.config(bg="black", fg="white", highlightbackground="white")
-        self.eight_button.config(bg="black", fg="white", highlightbackground="white")
-        self.nine_button.config(bg="black", fg="white", highlightbackground="white")
-        self.pi_button.config(bg="black", fg="white", highlightbackground="white")
-        self.euler_button.config(bg="black", fg="white", highlightbackground="white")
-        self.clean_button.config(bg="black", fg="white", highlightbackground="white")
-
-    def blue_amoled_mode(self):
-        '''Sets the UI's components to blue amoled based colors'''
-        self.result_frame.config(bg="#252440", highlightbackground="white", highlightthickness=1)    
-        self.operations_frame.config(bg="#252440", highlightbackground="white", highlightthickness=1)
-        self.operations_frame_advnc.config(bg="#252440", highlightbackground="white", highlightthickness=1)
-        self.numbers_frame.config(bg="#252440", highlightbackground="white", highlightthickness=1)
-
-        self.operations_label.config(bg="#252440", fg="white", highlightbackground="white")
-        self.operations_history_label.config(bg="#252440", fg="white", highlightbackground="white")
-
-        self.sqrt_button.config(bg="#3CB371", fg="white", highlightbackground="white")
-        self.porcentage_button.config(bg="#3CB371", fg="white", highlightbackground="white")
-        self.squared_button.config(bg="#3CB371", fg="white", highlightbackground="white")
-        self.one_divided_by_button.config(bg="#3CB371", fg="white", highlightbackground="white")
-        self.power_button.config(bg="#3CB371", fg="white", highlightbackground="white")
-        self.negative_button.config(bg="#3CB371", fg="white", highlightbackground="white") 
-        self.division_button.config(bg="#3CB371", fg="white", highlightbackground="white")
-        self.multiplication_button.config(bg="#3CB371", fg="white", highlightbackground="white")
-        self.substraction_button.config(bg="#3CB371", fg="white", highlightbackground="white")
-        self.sum_button.config(bg="#3CB371", fg="white", highlightbackground="white")
-        self.result_button.config(bg="#3CB371", fg="white", highlightbackground="white")
-
-        self.decimal_button.config(bg="#252440", fg="white", highlightbackground="white")
-        self.zero_button.config(bg="#252440", fg="white", highlightbackground="white")
-        self.double_zero_button.config(bg="#252440", fg="white", highlightbackground="white")
-        self.one_button.config(bg="#252440", fg="white", highlightbackground="white")
-        self.two_button.config(bg="#252440", fg="white", highlightbackground="white")
-        self.three_button.config(bg="#252440", fg="white", highlightbackground="white")
-        self.four_button.config(bg="#252440", fg="white", highlightbackground="white")
-        self.five_button.config(bg="#252440", fg="white", highlightbackground="white")
-        self.six_button.config(bg="#252440", fg="white", highlightbackground="white")
-        self.seven_button.config(bg="#252440", fg="white", highlightbackground="white")
-        self.eight_button.config(bg="#252440", fg="white", highlightbackground="white")
-        self.nine_button.config(bg="#252440", fg="white", highlightbackground="white")
-        self.pi_button.config(bg="#252440", fg="white", highlightbackground="white")
-        self.euler_button.config(bg="#252440", fg="white", highlightbackground="white")
-        self.clean_button.config(bg="#252440", fg="white", highlightbackground="white")
+        self.decimal_button.config(bg=bg_color_num_button, fg=foreground_color_num_button, highlightbackground=highlightbackground)
+        self.zero_button.config(bg=bg_color_num_button, fg=foreground_color_num_button, highlightbackground=highlightbackground)
+        self.double_zero_button.config(bg=bg_color_num_button, fg=foreground_color_num_button, highlightbackground=highlightbackground)
+        self.one_button.config(bg=bg_color_num_button, fg=foreground_color_num_button, highlightbackground=highlightbackground)
+        self.two_button.config(bg=bg_color_num_button, fg=foreground_color_num_button, highlightbackground=highlightbackground)
+        self.three_button.config(bg=bg_color_num_button, fg=foreground_color_num_button, highlightbackground=highlightbackground)
+        self.four_button.config(bg=bg_color_num_button, fg=foreground_color_num_button, highlightbackground=highlightbackground)
+        self.five_button.config(bg=bg_color_num_button, fg=foreground_color_num_button, highlightbackground=highlightbackground)
+        self.six_button.config(bg=bg_color_num_button, fg=foreground_color_num_button, highlightbackground=highlightbackground)
+        self.seven_button.config(bg=bg_color_num_button, fg=foreground_color_num_button, highlightbackground=highlightbackground)
+        self.eight_button.config(bg=bg_color_num_button, fg=foreground_color_num_button, highlightbackground=highlightbackground)
+        self.nine_button.config(bg=bg_color_num_button, fg=foreground_color_num_button, highlightbackground=highlightbackground)
+        self.pi_button.config(bg=bg_color_num_button, fg=foreground_color_num_button, highlightbackground=highlightbackground)
+        self.euler_button.config(bg=bg_color_num_button, fg=foreground_color_num_button, highlightbackground=highlightbackground)
+        self.clean_button.config(bg=bg_color_num_button, fg=foreground_color_num_button, highlightbackground=highlightbackground)

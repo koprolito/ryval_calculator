@@ -31,14 +31,19 @@ def update_history():
         pressed_result = 0
     ui.operations_history_label.config(text=history.get())
 
+def clean():
+    '''Cleans all the operations and history that has been proccessed until the momment by the user'''
+    global main_operator, history, operations, secondary_operator
+    main_operator.set("0")
+    history.set("")
+    operations.set("")
+    secondary_operator.set("")
+    update_main_operator()
+    update_history()
+
 #The main_operator will be updated accordingly to the operations that are processed.
 #It will be set as the text shown in the operations_label
 ui.operations_label.config(text=main_operator.get())
-
-#Add options to the theme_menu. Each option is a different theme for the view
-ui.theme_menu.add_command(label="Light mode", command=lambda:ui.light_mode())
-ui.theme_menu.add_command(label="Dark mode", command=lambda:ui.dark_mode())
-ui.theme_menu.add_command(label="Blue AMOLED mode", command=lambda:ui.blue_amoled_mode())
 
 #Validations for border cases
 def validate_indetermination() -> bool:
@@ -66,22 +71,36 @@ def is_int(num: str) -> bool:
 
 #Functions for operating numbers (each corresponds to their respective Button component)
 def basic_aritmethical_operations(operation: str) -> None:
-    global secondary_operator, main_operator, operations, history
-    history.set(history.get()+main_operator.get()+operation)
+    '''Operates numbers between the operations sum, substraction, 
+    multiplication and division of numbers'''
+    
+    global secondary_operator, main_operator, operations, history, pressed_result
+    if operation != '1/x':
+        history.set(history.get()+main_operator.get()+operation)
 
+    if operation == '1/x':                 
+        aux_ops = operations.get()
+        operations.set('1/')
+        main_operator.set(result(False))
+        operations.set(aux_ops)
     if(secondary_operator.get() == ""):
         secondary_operator.set(main_operator.get())
         operations.set(operations.get()+secondary_operator.get()+operation)
-    elif(secondary_operator.get() != "" and main_operator.get() != ""): 
+    elif(secondary_operator.get() != "" and main_operator.get() != "" and operation != '1/x'): 
         secondary_operator.set(result(False))
         operations.set(secondary_operator.get()+operation)
-    main_operator.set("0")
-    update_history()
-    update_main_operator()
+    else: 
+        result(True)
+    if operation != '1/x':
+        main_operator.set('0')
+        update_history()
+        update_main_operator()
 
 def advanced_arithmetical_operations(operation: str) -> None:
-    global main_operator, secondary_operator, operations, history
-    #global secondary_operator
+    '''Operates numbers between the operations of porcentage, squared root and exponents'''
+    
+    global main_operator, secondary_operator, operations, history, pressed_result
+    global secondary_operator
 
     if operation != '%' and operation != 'sqrt':
         history.set(history.get()+main_operator.get()+operation)
@@ -119,6 +138,24 @@ def advanced_arithmetical_operations(operation: str) -> None:
             operations.set(operations.get()+"sqrt")
             secondary_operator.set(result(True))
         operations.set(secondary_operator.get())
+    elif operation == 'sqrd':
+        if operations.get() != "":
+            main_operator.set(result(False))
+            if(is_int(main_operator.get()) != False):                
+                main_operator.set(main_operator.get()[:main_operator.get().find(".")])
+        operations.set(main_operator.get()+'^')            
+        history.set(main_operator.get()+'^')
+        main_operator.set('2')
+        result(True)
+
+def negate_operator() -> None:
+    global main_operator
+    if(main_operator.get() != '0' and main_operator.get() != ''):
+        if(main_operator.get()[0] == '-'):
+            main_operator.set(main_operator.get()[1::])
+        else:
+            main_operator.set('-'+main_operator.get())
+        update_main_operator()
 
 def result(update: bool) -> str:
     '''Determines the result of a series of operations.
@@ -210,7 +247,7 @@ def button_clicked(c: str):
             main_operator.set("0")
             secondary_operator.set('')
             update_history()            
-        if(main_operator.get() == '0' and c != '0' and c != '00' and c != '.'):
+        if main_operator.get() == '0' and c != '0' and c != '00' and c != '.':
             if c == 'pi':
                 main_operator.set(str(pi))
             elif c == 'e':
@@ -255,39 +292,11 @@ def button_clicked(c: str):
         elif c == '=':
             result(True)
         elif c == 'negate':
-            if(main_operator.get() != '0' and main_operator.get() != ''):
-                if(main_operator.get()[0] == '-'):
-                    main_operator.set(main_operator.get()[1::])
-                else:
-                    main_operator.set('-'+main_operator.get())
-                update_main_operator()
+            negate_operator()
         elif c == 'sqrd':
-            if operations.get() != "":
-                main_operator.set(result(False))
-                if(is_int(main_operator.get()) != False):                
-                    main_operator.set(main_operator.get()[:main_operator.get().find(".")])
-            operations.set(main_operator.get()+'^')            
-            history.set(main_operator.get()+'^')
-            main_operator.set('2')
-            result(True)
+            advanced_arithmetical_operations('sqrd')
         elif c == '1/x':
-            aux = operations.get()
-            operations.set('1/')
-            history.set(history.get()+'1/'+main_operator.get())
-            history_aux = history.get()
-            main_operator.set(result(False))
-            if(is_int(main_operator.get()) != False):                
-                    main_operator.set(main_operator.get()[:main_operator.get().find(".")])
-            operations.set(aux)
-            aux = main_operator.get()            
-            result(True)
-            history.set(history_aux)
-            pressed_result = 0
-            main_operator.set(aux)
-            update_main_operator()
-            update_history()
-            history.set('')
-
+            basic_aritmethical_operations('1/x')
 
 ui.decimal_button.config(command=lambda:button_clicked('.'))
 ui.zero_button.config(command=lambda:button_clicked('0'))
@@ -316,15 +325,6 @@ ui.negative_button.config(command=lambda:button_clicked('negate'))
 ui.squared_button.config(command=lambda:button_clicked('sqrd'))
 ui.result_button.config(command=lambda:button_clicked('='))
 
-def clean():
-    '''Cleans all the operations and history that has been proccessed until the momment by the user'''
-    global main_operator, history, operations, secondary_operator
-    main_operator.set("0")
-    history.set("")
-    operations.set("")
-    secondary_operator.set("")
-    update_main_operator()
-    update_history()
 
 ui.clean_button.config(command=clean)
 
@@ -370,6 +370,8 @@ def key_pressed(event):
             advanced_arithmetical_operations('%')
         elif event.char == '='or event.keysym == 'Return':
             result(True)
+        elif event.keysym == 'Escape':
+            clean()
 
 #Bind the keyboard event to the function key_pressed
 ui.root.bind('<Key>', key_pressed)
