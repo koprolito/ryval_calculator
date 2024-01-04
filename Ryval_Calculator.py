@@ -1,6 +1,12 @@
 from Controller import *
 import ctypes
+import pygame
+from pygame import mixer
 
+'''mixer.init()
+mixer.music.load("4K - El Alfa, Noriel и Darell.mp3")
+mixer.music.play()'''
+    
 #Get the configuration of the OS
 SPI_GETTHEMEACTIVE = 0x200A
 theme_active = ctypes.c_bool()
