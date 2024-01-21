@@ -1,4 +1,4 @@
-from Default_View import * 
+from Default_Components import * 
 
 class Standard_Calculator_View(Default_View):
     
