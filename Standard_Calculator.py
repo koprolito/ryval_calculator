@@ -10,6 +10,7 @@ window.minsize(320,450)
 
 #Global variables
 side_panel_active = False
+result_stament = Default_Components.ctk.StringVar()
 
 # Functions
 def manage_buttons(event):
@@ -40,7 +41,7 @@ animated_panel = Default_Components.SlidePanel(window, -0.5, 0.1, [nums_and_oper
 # Slide Panel Button
 slide_panel_button = Default_Components.ctk.CTkButton(window, text = '', 
 width=50,height=40,command = animated_panel.animate, 
-image=Default_Components.ctk.CTkImage(Image.open('sidebar_image.png')), fg_color='#2a4993')
+image=Default_Components.ctk.CTkImage(Image.open('sidebar_image.png')), fg_color='#2a4993', hover_color='#233F83')
 slide_panel_button.lift(animated_panel)
 slide_panel_button.place(anchor = 'nw')
 # Bind the disable and enable functions to the slide panel button
@@ -62,15 +63,15 @@ my_font = Default_Components.ctk.CTkFont(family='Helvetica', size=20, weight='bo
 numbers_buttons = []
 num = 9
 for i in range(10):
-    numbers_buttons.append(Default_Components.ctk.CTkButton(nums_and_operations_frame, text = str(num-i),font=my_font, width=130,height=50, fg_color='#7c87e7'))
-numbers_buttons.append(Default_Components.ctk.CTkButton(nums_and_operations_frame, text = '+/-', font=my_font, width=130,height=50, fg_color='#191919')) # +/- button
-numbers_buttons.append(Default_Components.ctk.CTkButton(nums_and_operations_frame, text = '.',font=my_font, width=130,height=50, fg_color='#191919')) # . button
+    numbers_buttons.append(Default_Components.ctk.CTkButton(nums_and_operations_frame, text = str(num-i),font=my_font, width=130,height=50, fg_color='#7c87e7', hover_color='#6B78D3'))
+numbers_buttons.append(Default_Components.ctk.CTkButton(nums_and_operations_frame, text = '+/-', font=my_font, width=130,height=50, fg_color='#2A2A2A', hover_color='#191919')) # +/- button
+numbers_buttons.append(Default_Components.ctk.CTkButton(nums_and_operations_frame, text = '.',font=my_font, width=130,height=50, fg_color='#2A2A2A', hover_color='#191919')) # . button
 operations_buttons = []
 operations_symbols = ['x','-','+','=','%','CE','C','del','1/x','x^2','sqrt','÷']
 for i in operations_symbols:
     if i == 'del':
-        operations_buttons.append(Default_Components.ctk.CTkButton(nums_and_operations_frame, text = '',image=Default_Components.ctk.CTkImage(Image.open('backspace_image.png')),font=my_font, width=130,height=50, fg_color='#2a4993'))
-    operations_buttons.append(Default_Components.ctk.CTkButton(nums_and_operations_frame, text = i,font=my_font, width=130,height=50, fg_color='#2a4993'))
+        operations_buttons.append(Default_Components.ctk.CTkButton(nums_and_operations_frame, text = '',image=Default_Components.ctk.CTkImage(Image.open('backspace_image.png')),font=my_font, width=130,height=50, fg_color='#2a4993', hover_color='#233F83'))
+    operations_buttons.append(Default_Components.ctk.CTkButton(nums_and_operations_frame, text = i,font=my_font, width=130,height=50, fg_color='#2a4993', hover_color='#233F83'))
 
 # Place the buttons
 #   Place operations buttons
