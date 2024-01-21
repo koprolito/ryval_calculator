@@ -1,14 +1,14 @@
 import customtkinter as ctk
 
 class SlidePanel(ctk.CTkFrame):
-	def __init__(self, parent:ctk, start_pos:float, end_pos:float, above_this_frame: ctk):
+	def __init__(self, parent:ctk, start_pos:float, end_pos:float, above_these_frames: list):
 		super().__init__(master = parent)
 
 		# general attributes 
 		self.start_pos = start_pos - 0.04
 		self.end_pos = end_pos + 0.03
 		self.width = abs(start_pos + end_pos) - 0.03
-		self.above_this_frame = above_this_frame
+		self.aboabove_these_frames = above_these_frames
 
 		# animation logic
 		self.pos = self.start_pos
@@ -23,7 +23,10 @@ class SlidePanel(ctk.CTkFrame):
 	def animate(self):
 		if self.in_start_pos:
 			self.animate_forward()
-			self.lift(aboveThis=self.above_this_frame)
+			try:
+				self.lift(aboveThis=self.aboabove_these_frames)
+			except:
+				pass
 		else:
 			self.animate_backwards()
 
@@ -43,15 +46,8 @@ class SlidePanel(ctk.CTkFrame):
 		else:
 			self.in_start_pos = True  
 
-class NumbersFrame(ctk.CTkFrame):
+class Frame(ctk.CTkFrame):
 
-	def __init__(self, parent: ctk, bg: str, x_pos: int, y_pos: int) -> None:
-		super().__init__(master = parent, fg_color= bg,border_color = bg,height=200, width=300)
-		self.place(relx = x_pos, rely = y_pos)
-		self.grid_propagate(False)
-
-class OperationsFrame(ctk.CTkFrame):
-	def __init__(self, parent: ctk, bg: str, x_pos: int, y_pos: int) -> None:
-		super().__init__(master = parent, fg_color= bg,border_color = bg,height=300, width=200)
-		self.place(relx = x_pos, rely = y_pos)
-		self.grid_propagate(False)
+	def __init__(self, parent: ctk, fg: str, x_pos: float, y_pos: float, relwidth: float, relheight: float) -> None:
+		super().__init__(master = parent, fg_color= fg)
+		self.place(relx = x_pos, rely = y_pos, relwidth = relwidth, relheight = relheight)	
