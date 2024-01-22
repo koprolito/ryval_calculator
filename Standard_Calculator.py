@@ -19,6 +19,22 @@ operations_flag = False #True if the user has already pressed an operation butto
 my_font = Default_Components.ctk.CTkFont(family='Helvetica', size=20, weight='bold')
 
 # Functions
+def has_decimals(number: str) -> bool:
+    '''Returns True if the given number has decimals different to 0'''
+    if number.find('.') != -1:
+        for i in range(number.find('.')+1, len(number)):
+            if number[i] != '0':
+                return True
+    return False
+
+def to_int(number: str) -> int:
+    '''Returns the given number as an integer
+    \nIf the number has decimals different to 0, returns the number as a float'''
+    if has_decimals(number):
+        return float(number)
+    else:
+        number = number[0:number.find('.')]
+        return int(number)
 
 def get_last_numerical_input() -> str:
     '''Returns the last numerical input given by the user'''
@@ -79,8 +95,21 @@ def manage_buttons(event) -> None:
         side_panel_active = False
 
 def update_current_operation_statement(stmt: str) -> None:
-    '''Updates the current operation statement label with the given statement'''
+    '''Updates the current operation statement label with the given statement
+    \nIt operates with the given statement and the current operation statement'''
     global current_operation_statement, operations_flag
+
+    #Validate if the user has exceeded the maximum number of digits (12)
+    if(len(current_operation_statement.get()) == 12 and stmt != 'C' and stmt != 'CE' and stmt != 'del'
+       and stmt not in '+x÷-=%' and stmt != 'x^2' and stmt != '1/x' and stmt != '√(x)'
+       and not operations_flag):
+        return None
+
+    #Validate if the user is giving an negation input
+    if stmt == '+/-':
+        aux_current = current_operation_statement.get() #Bakcup the current operation statement
+        current_operation_statement.set(execute_basic_operation('-1', current_operation_statement.get(), 'x'))
+        return None
 
     #Validate if the user has processed a division by zero
     if (validate_division_by_zero() == True
@@ -95,7 +124,10 @@ def update_current_operation_statement(stmt: str) -> None:
        and stmt != 'x^2' and stmt != '1/x' and stmt != '√(x)'
        and operations_history_statement.get() == ''
        and not operations_flag):
-        current_operation_statement.set(stmt)
+        if(stmt == '.'):
+            current_operation_statement.set('0.')
+        else:
+            current_operation_statement.set(stmt)
 
     else:
 
@@ -189,15 +221,27 @@ def update_current_operation_statement(stmt: str) -> None:
         elif stmt == 'CE':
             current_operation_statement.set('0')
 
+        elif stmt == 'del':
+            current_operation_statement.set(current_operation_statement.get()[0:-1])
+            if current_operation_statement.get() == '':
+                current_operation_statement.set('0')
+
         else:
             #Validate if the user is giving an numerical input and if the user has already
             #given an operation input
             if stmt in '1234567890.' and operations_flag:
-                current_operation_statement.set(stmt)
+                if current_operation_statement.get().find('.') == -1 and stmt == '.':
+                    current_operation_statement.set(current_operation_statement.get()+stmt)
+                elif current_operation_statement.get().find('.') != -1 and stmt == '.':
+                    return None
+                else:
+                    current_operation_statement.set(stmt)
                 operations_flag = False
             elif stmt in '1234567890.':
-                current_operation_statement.set(current_operation_statement.get()+stmt)
-
+                if current_operation_statement.get().find('.') != -1 and stmt == '.':
+                    return None
+                else:
+                    current_operation_statement.set(current_operation_statement.get()+stmt)
 
     #Update the current operation statement label
     current_operation_statement_label.configure(textvariable=current_operation_statement)
@@ -219,15 +263,15 @@ def execute_basic_operation(float_str_1: str, float_str_2: str, operation: str) 
 
     result = ''
     if operation == '+':
-        result = str(Operation.Operation.sum(float(float_str_1), float(float_str_2)))
+        result = str(to_int(str(Operation.Operation.sum(float(float_str_1), float(float_str_2)))))
     elif operation == '-':
-        result = str(Operation.Operation.substract(float(float_str_1), float(float_str_2)))
+        result = str(to_int(str(Operation.Operation.substract(float(float_str_1), float(float_str_2)))))
     elif operation == 'x':
-        result = str(Operation.Operation.multiply(float(float_str_1), float(float_str_2)))
+        result = str(to_int(str(Operation.Operation.multiply(float(float_str_1), float(float_str_2)))))
     elif operation == '÷':
-        result = str(Operation.Operation.divide(float(float_str_1), float(float_str_2)))
+        result = str(to_int(str(Operation.Operation.divide(float(float_str_1), float(float_str_2)))))
     elif operation == '%':
-        result = str(Operation.Operation.porcentage(float(float_str_1), float(float_str_2)))
+        result = str(to_int(str(Operation.Operation.porcentage(float(float_str_1), float(float_str_2)))))
     
     return result
 
@@ -236,9 +280,9 @@ def execute_advanced_operation(float_str_1: str, operation: str) -> str:
 
     result = ''
     if operation == '√(x)':
-        result = str(Operation.Operation.squared_root(float(float_str_1)))
+        result = str(str(Operation.Operation.squared_root(float(float_str_1))))
     elif operation == 'x^2':
-        result = str(Operation.Operation.power(float(float_str_1),2))
+        result = str(str(Operation.Operation.power(float(float_str_1),2)))
 
     #Validate if the result contains parenthesis
     if result[0] == "(":
@@ -248,6 +292,9 @@ def execute_advanced_operation(float_str_1: str, operation: str) -> str:
     #Validate if the result contains a comlpex number
     if result.find('j') != -1:
          result = result[0:result.find('+')]
+
+    #Validate if the result is an integer
+    result = str(to_int(result))
          
     return result
 
