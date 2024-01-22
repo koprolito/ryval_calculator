@@ -19,6 +19,20 @@ operations_flag = False #True if the user has already pressed an operation butto
 my_font = Default_Components.ctk.CTkFont(family='Helvetica', size=20, weight='bold')
 
 # Functions
+
+def get_last_numerical_input() -> str:
+    '''Returns the last numerical input given by the user'''
+    global operations_history_statement
+    aux = ''
+    #Get the last number given by the user
+    for i in reversed(operations_history_statement.get()):
+        if(i in '1234567890.' 
+           or i == "-" and aux not in "-" and aux != ''):
+            aux = i + aux
+        elif i not in '1234567890.' and aux != '':
+            break
+    return aux
+
 def validate_division_by_zero() -> bool:
     '''Returns True if the user has made a division by zero'''
     global current_operation_statement, operations_history_statement
@@ -29,6 +43,24 @@ def validate_division_by_zero() -> bool:
         current_operation_statement_label.configure(textvariable=current_operation_statement)
         return True
     return False
+
+def manage_porcentage_operation() -> None:
+    '''Manages the porcentage operation'''
+    global current_operation_statement, operations_history_statement
+     #Validate if the user has already given a number input
+    aux_current = current_operation_statement.get() #Bakcup the current operation statement
+    if operations_history_statement.get() == "":
+        current_operation_statement.set(execute_basic_operation("1", current_operation_statement.get(), '%'))
+        operations_history_statement.set(aux_current+"%=")
+    else:
+        last_numerical_input = get_last_numerical_input()
+        porcentage = execute_basic_operation(
+            last_numerical_input, current_operation_statement.get(), '%')
+        current_operation_statement.set(execute_basic_operation(last_numerical_input, 
+            porcentage, operations_history_statement.get()[-1]))
+        operations_history_statement.set(operations_history_statement.get()
+            +porcentage+"%=")
+    update_operations_history_statement("")
 
 def manage_buttons(event) -> None:
     '''Disable or enable the buttons when the slide panel is active'''
@@ -72,8 +104,12 @@ def update_current_operation_statement(stmt: str) -> None:
            and operations_history_statement.get() == '' 
            and stmt != 'C' and stmt != 'CE' and stmt != 'del'):
             
+            #Validate if the user is giving a % input
+            if stmt == "%":
+                manage_porcentage_operation()
+            
             #Validate if the user is giving a power, squared root or 1-divided-by operation input
-            if(stmt == 'x^2' or stmt == '1/x' or stmt == '√(x)'):
+            elif(stmt == 'x^2' or stmt == '1/x' or stmt == '√(x)'):
                 aux_current = current_operation_statement.get() #Bakcup the current operation statement
                 if(stmt == '1/x'):
                     stmt = "1÷x"
@@ -99,7 +135,13 @@ def update_current_operation_statement(stmt: str) -> None:
         #Validate if the user is giving an operation input after another operation input
         elif (stmt in '+-x÷=%' or stmt == 'x^2' or stmt == '1/x' or stmt == '√(x)'
               and operations_history_statement.get() != ''):
-            if stmt == 'x^2' or stmt == '1/x' or stmt == '√(x)':
+            
+            #Validate if the user is giving a % input
+            if stmt == "%":
+                manage_porcentage_operation()
+
+            #Validate if the user is giving a power, squared root or 1-divided-by operation input
+            elif stmt == 'x^2' or stmt == '1/x' or stmt == '√(x)':
                 aux_current = current_operation_statement.get() #Bakcup the current operation statement
                 if(stmt == '1/x'):
                     stmt = "1÷x"
@@ -114,13 +156,7 @@ def update_current_operation_statement(stmt: str) -> None:
                 operations_history_statement.set(stmt.replace('x', aux_current)+"=")
                 update_operations_history_statement("")
             else:
-                aux = ''
-                #Get the last number given by the user
-                for i in reversed(operations_history_statement.get()):
-                    if i in '1234567890.':
-                        aux = i + aux
-                    elif i not in '1234567890.' and aux != '':
-                        break
+                aux = get_last_numerical_input()
 
                 #Backup the values of the statements
                 op_history_aux = operations_history_statement.get()
@@ -190,6 +226,8 @@ def execute_basic_operation(float_str_1: str, float_str_2: str, operation: str) 
         result = str(Operation.Operation.multiply(float(float_str_1), float(float_str_2)))
     elif operation == '÷':
         result = str(Operation.Operation.divide(float(float_str_1), float(float_str_2)))
+    elif operation == '%':
+        result = str(Operation.Operation.porcentage(float(float_str_1), float(float_str_2)))
     
     return result
 
