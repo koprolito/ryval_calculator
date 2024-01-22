@@ -19,6 +19,17 @@ operations_flag = False #True if the user has already pressed an operation butto
 my_font = Default_Components.ctk.CTkFont(family='Helvetica', size=20, weight='bold')
 
 # Functions
+def validate_division_by_zero() -> bool:
+    '''Returns True if the user has made a division by zero'''
+    global current_operation_statement, operations_history_statement
+    if current_operation_statement.get() == 'Cannot divide by 0':
+        operations_history_statement.set('')
+        update_operations_history_statement('')
+        current_operation_statement.set('Cannot divide by 0')
+        current_operation_statement_label.configure(textvariable=current_operation_statement)
+        return True
+    return False
+
 def manage_buttons(event) -> None:
     '''Disable or enable the buttons when the slide panel is active'''
     global side_panel_active
@@ -40,7 +51,7 @@ def update_current_operation_statement(stmt: str) -> None:
     global current_operation_statement, operations_flag
 
     #Validate if the user has processed a division by zero
-    if (current_operation_statement.get() == 'Cannot divide by 0' 
+    if (validate_division_by_zero() == True
     and stmt != 'C' and stmt != 'CE' 
     and stmt != 'del'):
         return None
@@ -49,8 +60,9 @@ def update_current_operation_statement(stmt: str) -> None:
     if(current_operation_statement.get() == '0' 
        and stmt != 'C' and stmt != 'CE' 
        and stmt != 'del' and stmt not in '+x÷-%'
-       and stmt != 'x^2' and stmt != '1/x' and stmt != 'sqrt'
-       and operations_history_statement.get() == ''):
+       and stmt != 'x^2' and stmt != '1/x' and stmt != '√(x)'
+       and operations_history_statement.get() == ''
+       and not operations_flag):
         current_operation_statement.set(stmt)
 
     else:
@@ -59,48 +71,78 @@ def update_current_operation_statement(stmt: str) -> None:
         if(stmt not in '1234567890.' 
            and operations_history_statement.get() == '' 
            and stmt != 'C' and stmt != 'CE' and stmt != 'del'):
-            update_operations_history_statement(current_operation_statement.get()+stmt)
+            
+            #Validate if the user is giving a power, squared root or 1-divided-by operation input
+            if(stmt == 'x^2' or stmt == '1/x' or stmt == '√(x)'):
+                aux_current = current_operation_statement.get() #Bakcup the current operation statement
+                if(stmt == '1/x'):
+                    stmt = "1÷x"
+                    current_operation_statement.set(execute_basic_operation('1', current_operation_statement.get(), '÷'))
+                else:
+                    current_operation_statement.set(execute_advanced_operation(current_operation_statement.get(), stmt))
+                    
+                #Validate if the user has made a division by zero
+                if validate_division_by_zero() == True:
+                    return None
+                
+                operations_history_statement.set(stmt.replace('x', aux_current)+"=")
+                update_operations_history_statement("")
+            else:
+                if(operations_history_statement.get() not in '^√'
+                and operations_history_statement.get().find("1÷") == -1):
+                    operations_history_statement.set(current_operation_statement.get()+stmt)
+                else:
+                    operations_history_statement.set(current_operation_statement.get())
+                    update_operations_history_statement(stmt)
             operations_flag = True
             
         #Validate if the user is giving an operation input after another operation input
-        elif((stmt in '+-x÷=%' or stmt == 'x^2' 
-              or stmt == '1/x' 
-              or stmt == 'sqrt') 
+        elif (stmt in '+-x÷=%' or stmt == 'x^2' or stmt == '1/x' or stmt == '√(x)'
               and operations_history_statement.get() != ''):
-            aux = ''
-            #Get the last number given by the user
-            for i in reversed(operations_history_statement.get()):
-                if i in '1234567890.':
-                    aux = i + aux
-                elif i not in '1234567890.' and aux != '':
-                    break
-
-            #Backup the values of the statements
-            op_history_aux = operations_history_statement.get()
-            current_statement_aux = current_operation_statement.get()
-            #Validate if the user is giving an operation input after a result input
-            if operations_history_statement.get().find('=') == -1:
-                current_operation_statement.set(execute_operation(aux, 
-                current_operation_statement.get(), op_history_aux[-1]))                
+            if stmt == 'x^2' or stmt == '1/x' or stmt == '√(x)':
+                aux_current = current_operation_statement.get() #Bakcup the current operation statement
+                if(stmt == '1/x'):
+                    stmt = "1÷x"
+                    current_operation_statement.set(execute_basic_operation('1', current_operation_statement.get(), '÷'))
+                else:
+                    current_operation_statement.set(execute_advanced_operation(current_operation_statement.get(), stmt))
+                    
                 #Validate if the user has made a division by zero
-                if current_operation_statement.get() == 'Cannot divide by 0':
-                    operations_history_statement.set('')
-                    update_current_operation_statement('')
-                    current_operation_statement.set('Cannot divide by 0')
-                    current_operation_statement_label.configure(textvariable=current_operation_statement)
+                if validate_division_by_zero() == True:
                     return None
-
-
-            #Validate if the user is giving an operation input after another operation input
-            #different to '='
-            if stmt != '=':
-                operations_history_statement.set('')
-                update_operations_history_statement(current_operation_statement.get()+stmt)
-                current_operation_statement.set(current_statement_aux)
+                
+                operations_history_statement.set(stmt.replace('x', aux_current)+"=")
+                update_operations_history_statement("")
             else:
-                operations_history_statement.set('')
-                update_operations_history_statement(op_history_aux+current_statement_aux+stmt)
-            operations_flag = True
+                aux = ''
+                #Get the last number given by the user
+                for i in reversed(operations_history_statement.get()):
+                    if i in '1234567890.':
+                        aux = i + aux
+                    elif i not in '1234567890.' and aux != '':
+                        break
+
+                #Backup the values of the statements
+                op_history_aux = operations_history_statement.get()
+                current_statement_aux = current_operation_statement.get()
+                #Validate if the user is giving an operation input after a result input
+                if operations_history_statement.get().find('=') == -1:
+                    current_operation_statement.set(execute_basic_operation(aux, 
+                    current_operation_statement.get(), op_history_aux[-1]))                
+                    #Validate if the user has made a division by zero
+                    if validate_division_by_zero() == True:
+                        return None
+
+                #Validate if the user is giving an operation input after another operation input
+                #different to '='
+                if stmt != '=':
+                    operations_history_statement.set('')
+                    update_operations_history_statement(current_operation_statement.get()+stmt)
+                    current_operation_statement.set(current_statement_aux)
+                else:
+                    operations_history_statement.set('')
+                    update_operations_history_statement(op_history_aux+current_statement_aux+stmt)
+                operations_flag = True
 
         #Validate if the user is giving an 'clear operations' input
         elif stmt == 'C':
@@ -136,8 +178,8 @@ def update_operations_history_statement(stmt: str) -> None:
         operations_history_statement.set(operations_history_statement.get()+stmt)
     operations_history_statement_label.configure(textvariable=operations_history_statement)
 
-def execute_operation(float_str_1: str, float_str_2: str, operation: str) -> str:
-    '''Executes the given operation with the given numbers and returns the result'''
+def execute_basic_operation(float_str_1: str, float_str_2: str, operation: str) -> str:
+    '''Executes the given basic arithmetical operation with the given numbers and returns the result'''
 
     result = ''
     if operation == '+':
@@ -149,6 +191,26 @@ def execute_operation(float_str_1: str, float_str_2: str, operation: str) -> str
     elif operation == '÷':
         result = str(Operation.Operation.divide(float(float_str_1), float(float_str_2)))
     
+    return result
+
+def execute_advanced_operation(float_str_1: str, operation: str) -> str:
+    '''Executes the given basic arithmetical operation with the given numbers and returns the result'''
+
+    result = ''
+    if operation == '√(x)':
+        result = str(Operation.Operation.squared_root(float(float_str_1)))
+    elif operation == 'x^2':
+        result = str(Operation.Operation.power(float(float_str_1),2))
+
+    #Validate if the result contains parenthesis
+    if result[0] == "(":
+        result = result.replace('(', '')
+        result = result.replace(')', '')
+
+    #Validate if the result contains a comlpex number
+    if result.find('j') != -1:
+         result = result[0:result.find('+')]
+         
     return result
 
 #Frames
@@ -210,7 +272,7 @@ number_buttons.append(Default_Components.ctk.CTkButton(nums_and_operations_frame
 
 #   Create operation buttons
 operation_buttons = []
-operations_symbols = ['x','-','+','=','%','CE','C','del','1/x','x^2','sqrt','÷']
+operations_symbols = ['x','-','+','=','%','CE','C','del','1/x','x^2','√(x)','÷']
 for i in operations_symbols:
     if i == 'del':
         operation_buttons.append(Default_Components.ctk.CTkButton(nums_and_operations_frame, text = '',
