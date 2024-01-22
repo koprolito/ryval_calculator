@@ -50,4 +50,9 @@ class Frame(ctk.CTkFrame):
 
 	def __init__(self, parent: ctk, fg: str, x_pos: float, y_pos: float, relwidth: float, relheight: float) -> None:
 		super().__init__(master = parent, fg_color= fg)
-		self.place(relx = x_pos, rely = y_pos, relwidth = relwidth, relheight = relheight)	
+		self.place(relx = x_pos, rely = y_pos, relwidth = relwidth, relheight = relheight)
+		
+class Label(ctk.CTkLabel):
+	def __init__(self, parent: ctk, textvariable: ctk.StringVar, font: ctk.CTkFont, relx: float, rely: float, anchor: str) -> None:
+		super().__init__(master = parent, textvariable = textvariable, font = font)
+		self.place(relx = relx, rely = rely, anchor = anchor)
