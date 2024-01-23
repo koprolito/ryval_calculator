@@ -94,6 +94,13 @@ def manage_buttons(event) -> None:
             button.configure(state='normal')
         side_panel_active = False
 
+def manage_brother_panels() -> None:
+    '''Manages the brother panels of the main slide panel'''
+    global slide_panel, settings_panel
+    slide_panel.animate()
+    if not slide_panel.is_active():
+        settings_panel.animate_backwards()
+
 def update_current_operation_statement(stmt: str) -> None:
     '''Updates the current operation statement label with the given statement
     \nIt operates with the given statement and the current operation statement'''
@@ -241,7 +248,10 @@ def update_current_operation_statement(stmt: str) -> None:
                 if current_operation_statement.get().find('.') != -1 and stmt == '.':
                     return None
                 else:
-                    current_operation_statement.set(current_operation_statement.get()+stmt)
+                    if current_operation_statement.get() == '0':
+                        current_operation_statement.set(stmt)
+                    else:
+                        current_operation_statement.set(current_operation_statement.get()+stmt)
 
     #Update the current operation statement label
     current_operation_statement_label.configure(textvariable=current_operation_statement)
@@ -305,8 +315,11 @@ nums_and_operations_frame = Default_Components.Frame(window, 'transparent', 0.0,
 #   Results frame
 results_frame = Default_Components.Frame(window, 'transparent', 0.0, 0.0, 1, 0.3)
 
-#   Animated Slide Panel
-animated_panel = Default_Components.SlidePanel(window, -0.5, 0.1, [nums_and_operations_frame, results_frame])
+#   Animated Slide Panels
+#       Settings Panel
+settings_panel = Default_Components.SettingsPanel(window, -0.5, 0.46, [nums_and_operations_frame, results_frame])
+#       Main Slide Panel
+slide_panel = Default_Components.SlidePanel(window, -0.5, 0.1, [nums_and_operations_frame, results_frame], settings_panel.animate)
 
 #Labels
 #   Number statement label
@@ -321,12 +334,12 @@ my_font = Default_Components.ctk.CTkFont(family='Helvetica', size=20, weight='bo
 #Buttons
 # Slide Panel Button
 slide_panel_button = Default_Components.ctk.CTkButton(window, text = '', 
-width=50,height=40,command = animated_panel.animate, 
+width=50,height=40,command = manage_brother_panels, 
 image=Default_Components.ctk.CTkImage(Image.open('sidebar_image.png')), fg_color='#2a4993', hover_color='#233F83')
-slide_panel_button.lift(animated_panel)
+slide_panel_button.lift(slide_panel)
 slide_panel_button.place(anchor = 'nw')
 # Bind the disable and enable functions to the slide panel button
-slide_panel_button.bind('<Button-1>', lambda event: manage_buttons(event) if animated_panel.is_active else manage_buttons(event))
+slide_panel_button.bind('<Button-1>', lambda event: manage_buttons(event) if slide_panel.is_active else manage_buttons(event))
 
 # Set the weight for each row and column
 for i in range(6):
