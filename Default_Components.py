@@ -74,9 +74,14 @@ class SettingsPanel(SlidePanel):
 
 		self.width = abs(start_pos + end_pos) + 0.4
 
-		self.divider.destroy()
 		self.settings_button.destroy()
 
+		self.settings_label = ctk.CTkLabel(master=self, text="Settings", font=ctk.CTkFont(family="Helvetica", size=20, weight="bold"))
+		self.settings_label.place(relx=0.1, rely=0.05)
+		self.divider.place(relx = -0.5, rely = 0.15)  # Change padding as needed
+
+		self.themes_label = ctk.CTkLabel(master=self, text="Themes", font=ctk.CTkFont(family="Helvetica", size=15, weight="bold"))
+		self.themes_label.place(relx=0.1, rely=0.2)
 		# Create an StringVar for the RadioButtons
 		self.radio_var = ctk.StringVar()
 
@@ -86,9 +91,9 @@ class SettingsPanel(SlidePanel):
 		self.radio3 = ctk.CTkRadioButton(master=self, text="Opción 3", variable=self.radio_var, value="3")
 
 		# Place RadioButtons
-		self.radio1.place(relx=0.1, rely=0.1)
-		self.radio2.place(relx=0.1, rely=0.2)
-		self.radio3.place(relx=0.1, rely=0.3)
+		self.radio1.place(relx=0.1, rely=0.3)
+		self.radio2.place(relx=0.1, rely=0.4)
+		self.radio3.place(relx=0.1, rely=0.5)
 
 		# layout
 		self.place(relx = self.start_pos, relwidth = self.width, relheight = 1.0)
