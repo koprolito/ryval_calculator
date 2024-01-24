@@ -28,6 +28,7 @@ class SlidePanel(ctk.CTkFrame):
             text_color="black", 
             image=ctk.CTkImage(Image.open('settings_image.png')), 
 			command=settings_button_command)
+		self.settings_button.configure(corner_radius=0)
 
 		# layout
 		self.place(relx = self.start_pos, relwidth = self.width, relheight = 1.0)
@@ -76,19 +77,20 @@ class SettingsPanel(SlidePanel):
 
 		self.settings_button.destroy()
 
-		self.settings_label = ctk.CTkLabel(master=self, text="Settings", font=ctk.CTkFont(family="Helvetica", size=20, weight="bold"))
+		self.settings_label = ctk.CTkLabel(master=self, text="Settings", font=ctk.CTkFont(family="Helvetica", size=20))
 		self.settings_label.place(relx=0.1, rely=0.05)
 		self.divider.place(relx = -0.5, rely = 0.15)  # Change padding as needed
 
-		self.themes_label = ctk.CTkLabel(master=self, text="Themes", font=ctk.CTkFont(family="Helvetica", size=15, weight="bold"))
+		self.themes_label = ctk.CTkLabel(master=self, text="Themes", font=ctk.CTkFont(family="Helvetica", size=15))
 		self.themes_label.place(relx=0.1, rely=0.2)
+		
 		# Create an StringVar for the RadioButtons
-		self.radio_var = ctk.StringVar()
+		self.radio_var = ctk.IntVar()
 
 		# Create RadioButtons
-		self.radio1 = ctk.CTkRadioButton(master=self, text="Opción 1", variable=self.radio_var, value="1")
-		self.radio2 = ctk.CTkRadioButton(master=self, text="Opción 2", variable=self.radio_var, value="2")
-		self.radio3 = ctk.CTkRadioButton(master=self, text="Opción 3", variable=self.radio_var, value="3")
+		self.radio1 = ctk.CTkRadioButton(master=self, text="Ligth mode", variable=self.radio_var, value=1)
+		self.radio2 = ctk.CTkRadioButton(master=self, text="Dark mode", variable=self.radio_var, value=2)
+		self.radio3 = ctk.CTkRadioButton(master=self, text="Blue mode", variable=self.radio_var, value=3)
 
 		# Place RadioButtons
 		self.radio1.place(relx=0.1, rely=0.3)
