@@ -19,8 +19,9 @@ operations_flag = False #True if the user has already pressed an operation butto
 my_font = Default_Components.ctk.CTkFont(family='Helvetica', size=26)
 
 # Functions
-def change_application_theme():
-    '''Method for changing the application theme'''
+def change_application_theme(value: int):
+    '''Method for changing the application theme according to the value,\n
+    which is given by pressing one of the CtkSwitches'''
 
     global settings_panel, results_frame, nums_and_operations_frame
     global current_operation_statement_label, operations_history_statement_label
@@ -40,7 +41,7 @@ def change_application_theme():
 
     text_color = text_color_settings = ''    
 
-    if settings_panel.radio_var.get() == 1:
+    if value == 1:
         fg_color_window_frame_panel = '#f6f6f6'
         fg_color_setting_button = fg_color_radio_buttons = fg_color_slide_panels = fg_color_window_frame_panel
         fg_color_labels = fg_color_results_frame_panel = fg_color_window_frame_panel
@@ -57,7 +58,7 @@ def change_application_theme():
         text_color_settings = text_color = 'black'
         hv_color_settings_button = hv_color_nums
         hv_color_radio_buttons = 'black'
-    elif settings_panel.radio_var.get() == 2:
+    elif value == 2:
         fg_color_window_frame_panel = '#000000'
         fg_color_radio_buttons = fg_color_slide_panels = fg_color_window_frame_panel
         fg_color_labels = fg_color_results_frame_panel = fg_color_window_frame_panel
@@ -76,7 +77,7 @@ def change_application_theme():
         text_color_settings = 'black'
         hv_color_radio_buttons = 'white'
         hv_color_settings_button = hv_color_nums
-    elif settings_panel.radio_var.get() == 3:
+    elif value == 3:
         fg_color_window_frame_panel = ['gray92', 'gray14'] 
         fg_color_slide_panels = ['gray86', 'gray17']
         fg_color_radio_buttons = '#292929'
@@ -97,7 +98,6 @@ def change_application_theme():
         fg_color_labels = ['gray92', 'gray14']   
         fg_color_results_frame_panel = '#292929'
         hv_color_settings_button = '#a2a2a2'
-
 
         
     window.configure(fg_color=fg_color_window_frame_panel)
@@ -120,9 +120,34 @@ def change_application_theme():
     settings_panel.settings_label.configure(fg_color=fg_color_labels, text_color = text_color)
     settings_panel.themes_label.configure(fg_color=fg_color_labels, text_color = text_color)
     settings_panel.divider.configure(fg_color=fg_color_divider)
-    settings_panel.radio1.configure(fg_color=fg_color_radio_buttons, text_color = text_color, hover_color = hv_color_radio_buttons)
-    settings_panel.radio2.configure(fg_color=fg_color_radio_buttons, text_color = text_color, hover_color = hv_color_radio_buttons)
-    settings_panel.radio3.configure(fg_color=fg_color_radio_buttons, text_color = text_color, hover_color = hv_color_radio_buttons)    
+    settings_panel.switch1.configure(fg_color=fg_color_radio_buttons, text_color = text_color, hover_color = hv_color_radio_buttons)
+    settings_panel.switch2.configure(fg_color=fg_color_radio_buttons, text_color = text_color, hover_color = hv_color_radio_buttons)
+    settings_panel.switch3.configure(fg_color=fg_color_radio_buttons, text_color = text_color, hover_color = hv_color_radio_buttons)    
+
+def manage_switches():
+    """Deselects all the button in to_deactivate and sets the application\n
+    theme to the current selected button value"""
+    global settings_panel
+    on_switch = 0
+
+    if settings_panel.switch_var.get() == 1:
+        settings_panel.switch2.deselect()
+        settings_panel.switch3.deselect()
+        on_switch = 1
+    elif settings_panel.switch_var.get() == 2:
+        settings_panel.switch1.deselect()
+        settings_panel.switch3.deselect()
+        on_switch = 2
+    elif settings_panel.switch_var.get() == 3:
+        settings_panel.switch2.deselect()
+        settings_panel.switch1.deselect()
+        on_switch = 3
+    else:
+        return None
+    
+    change_application_theme(on_switch)
+    
+        
 
 def has_decimals(number: str) -> bool:
     '''Returns True if the given number has decimals different to 0'''
@@ -427,9 +452,9 @@ settings_panel = Default_Components.SettingsPanel(window, -0.5, 0.46, [nums_and_
 slide_panel = Default_Components.SlidePanel(window, -0.5, 0.1, [nums_and_operations_frame, results_frame], settings_panel.animate)
 slide_panel.settings_button.configure(hover_color = '#a2a2a2')
 
-settings_panel.radio1.configure(command = change_application_theme)
-settings_panel.radio2.configure(command = change_application_theme)
-settings_panel.radio3.configure(command = change_application_theme)
+settings_panel.switch1.configure(command = manage_switches)
+settings_panel.switch2.configure(command = manage_switches)
+settings_panel.switch3.configure(command = manage_switches)
 
 #Labels
 #   Number statement label

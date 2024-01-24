@@ -52,8 +52,8 @@ class SlidePanel(ctk.CTkFrame):
 
 	def animate_forward(self):
 		"""Animates the panel to the end position"""
-		if self.pos < self.end_pos-0.13:
-			self.pos += 0.02
+		if self.pos < self.end_pos-0.16:
+			self.pos += 0.04
 			self.place(relx = self.pos, relwidth = self.width, relheight = 1.0)
 			self.after(10, self.animate_forward)
 		else:
@@ -62,7 +62,7 @@ class SlidePanel(ctk.CTkFrame):
 	def animate_backwards(self):
 		"""Animates the panel to the start position"""
 		if self.pos > self.start_pos:
-			self.pos -= 0.02
+			self.pos -= 0.04
 			self.place(relx = self.pos, relwidth = self.width, relheight = 1.0)
 			self.after(10, self.animate_backwards)
 		else:
@@ -84,25 +84,25 @@ class SettingsPanel(SlidePanel):
 		self.themes_label = ctk.CTkLabel(master=self, text="Themes", font=ctk.CTkFont(family="Helvetica", size=15))
 		self.themes_label.place(relx=0.1, rely=0.2)
 		
-		# Create an StringVar for the RadioButtons
-		self.radio_var = ctk.IntVar()
+		# Create an IntVar for the Switches
+		self.switch_var = ctk.IntVar()
 
 		# Create RadioButtons
-		self.radio1 = ctk.CTkRadioButton(master=self, text="Ligth mode", variable=self.radio_var, value=1)
-		self.radio2 = ctk.CTkRadioButton(master=self, text="Dark mode", variable=self.radio_var, value=2)
-		self.radio3 = ctk.CTkRadioButton(master=self, text="Blue mode", variable=self.radio_var, value=3)
+		self.switch1 = ctk.CTkSwitch(master=self, text="Ligth mode", variable=self.switch_var, onvalue=1, offvalue=1)
+		self.switch2 = ctk.CTkSwitch(master=self, text="Dark mode", variable=self.switch_var, onvalue=2, offvalue=2)
+		self.switch3 = ctk.CTkSwitch(master=self, text="Blue mode", variable=self.switch_var, onvalue=3, offvalue=3)
 
-		# Place RadioButtons
-		self.radio1.place(relx=0.1, rely=0.3)
-		self.radio2.place(relx=0.1, rely=0.4)
-		self.radio3.place(relx=0.1, rely=0.5)
+		# Place switchButtons
+		self.switch1.place(relx=0.1, rely=0.3)
+		self.switch2.place(relx=0.1, rely=0.4)
+		self.switch3.place(relx=0.1, rely=0.5)
 
 		# layout
 		self.place(relx = self.start_pos, relwidth = self.width, relheight = 1.0)
 
 	def animate_forward(self):
 		"""Animates the panel to the end position"""
-		if self.pos < self.end_pos-0.13:
+		if self.pos < self.end_pos-0.16:
 			self.pos += 0.03
 			self.place(relx = self.pos, relwidth = self.width, relheight = 1.0)
 			self.after(10, self.animate_forward)
@@ -117,6 +117,7 @@ class SettingsPanel(SlidePanel):
 			self.after(10, self.animate_backwards)
 		else:
 			self.in_start_pos = True
+		
 
 class SettingsButton(ctk.CTkButton):
     def __init__(self, parent: ctk, text: str, 
