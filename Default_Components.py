@@ -151,16 +151,13 @@ class Label(ctk.CTkLabel):
 
 class BasicCalculator():
 	def __init__(self, window: ctk) -> None:
-		self.window = window
-          
-		#Global variables
+		self.window = window #Main window
 		self.side_panel_active = False #Determines if the side panel is active or not
 		self.current_operation_statement = ctk.StringVar() #Stores the current operation statement
 		self.current_operation_statement.set('0') #Initialize the current operation statement with '0'
 		self.operations_history_statement = ctk.StringVar() #Stores the operations history statement
-		self.operations_flag = False #True if the user has already pressed an operation button
-		#Define the font for the whole program
-		self.my_font = ctk.CTkFont(family='Helvetica', size=26)
+		self.operations_flag = False #True if the user has already pressed an operation button		
+		self.my_font = ctk.CTkFont(family='Helvetica', size=26) #Define the font for the whole program
 
 		#Frames
 		#   Operations and numbers frame
@@ -270,10 +267,6 @@ class BasicCalculator():
 		'''Method for changing the application theme according to the value,\n
 		which is given by pressing one of the CtkSwitches'''
 
-		#global settings_panel, results_frame, nums_and_operations_frame
-		#global current_operation_statement_label, operations_history_statement_label
-		#global number_buttons, operation_buttons, slide_panel_button
-
 		#Variables for assgination of each component's colors
 		fg_color_window_frame_panel = fg_color_nums = fg_color_operations = fg_color_backspace= ''
 		fg_color_divider = fg_color_radio_buttons = fg_color_slide_panel_button = ''
@@ -369,7 +362,7 @@ class BasicCalculator():
 	def manage_switches(self):
 		"""Deselects all the button in to_deactivate and sets the application\n
 		theme to the current selected button value"""
-		#global settings_panel
+
 		on_switch = 0
 
 		if self.settings_panel.switch_var.get() == 1:
@@ -411,7 +404,7 @@ class BasicCalculator():
 
 	def get_last_numerical_input(self) -> str:
 		'''Returns the last numerical input given by the user'''
-		#global operations_history_statement
+
 		aux = ''
 		#Get the last number given by the user
 		for i in reversed(self.operations_history_statement.get()):
@@ -424,7 +417,7 @@ class BasicCalculator():
 
 	def validate_division_by_zero(self) -> bool:
 		'''Returns True if the user has made a division by zero'''
-		#global current_operation_statement, operations_history_statement
+
 		if self.current_operation_statement.get() == 'Cannot divide by 0':
 			self.operations_history_statement.set('')
 			self.update_operations_history_statement('')
@@ -435,7 +428,7 @@ class BasicCalculator():
 
 	def manage_porcentage_operation(self) -> None:
 		'''Manages the porcentage operation'''
-		#global current_operation_statement, operations_history_statement
+
 		#Validate if the user has already given a number input
 		aux_current = self.current_operation_statement.get() #Bakcup the current operation statement
 		if self.operations_history_statement.get() == "":
@@ -453,7 +446,7 @@ class BasicCalculator():
 
 	def manage_buttons(self,event) -> None:
 		'''Disable or enable the buttons when the slide panel is active'''
-		#global side_panel_active
+
 		if not self.side_panel_active:
 			for button in self.number_buttons:
 				button.configure(state='disabled')
@@ -469,7 +462,7 @@ class BasicCalculator():
 
 	def manage_brother_panels(self) -> None:
 		'''Manages the brother panels of the main slide panel'''
-		#global slide_panel, settings_panel
+
 		self.slide_panel.animate()
 		if not self.slide_panel.is_active():
 			self.settings_panel.animate_backwards()
@@ -477,7 +470,6 @@ class BasicCalculator():
 	def update_current_operation_statement(self,stmt: str) -> None:
 		'''Updates the current operation statement label with the given statement
 		\nIt operates with the given statement and the current operation statement'''
-		#global current_operation_statement, operations_flag
 
 		#Validate if the user has exceeded the maximum number of digits (12)
 		if(len(self.current_operation_statement.get()) == 12 and stmt != 'C' and stmt != 'CE' and stmt != 'del'
@@ -542,7 +534,7 @@ class BasicCalculator():
 					else:
 						self.operations_history_statement.set(self.current_operation_statement.get())
 						self.update_operations_history_statement(stmt)
-				operations_flag = True
+				self.operations_flag = True
 				
 			#Validate if the user is giving an operation input after another operation input
 			elif (stmt in '+-x÷=%' or stmt == 'x^2' or stmt == '1/x' or stmt == '√(x)'
@@ -632,8 +624,6 @@ class BasicCalculator():
 	def update_operations_history_statement(self,stmt: str) -> None:
 		'''Updates the operations history statement label with the given statement'''
 
-		#global operations_history_statement
-
 		#Validate if the user is giving the very first input
 		if(self.operations_history_statement.get() == ''):
 			self.operations_history_statement.set(stmt)
@@ -680,4 +670,3 @@ class BasicCalculator():
 		result = str(self.to_int(result))
 			
 		return result
-
