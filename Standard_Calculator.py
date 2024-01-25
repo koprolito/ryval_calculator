@@ -31,80 +31,74 @@ def change_application_theme(value: int):
     fg_color_window_frame_panel = fg_color_nums = fg_color_operations = fg_color_backspace= ''
     fg_color_divider = fg_color_radio_buttons = fg_color_slide_panel_button = ''
     fg_color_setting_button = fg_color_slide_panels =''
-    fg_color_labels = fg_color_results_frame_panel =''
+    fg_color_results_frame_panel =''
 
-    hv_color_nums = hv_color_operations = hv_color_backspace = hv_color_radio_buttons = ''
+    hv_color_nums = hv_color_operations = hv_color_backspace = ''
     hv_color_settings_button = ''
 
     bg_color_nums = bg_color_operations = ''
-
 
     text_color = text_color_settings = ''    
 
     if value == 1:
         fg_color_window_frame_panel = '#f6f6f6'
         fg_color_setting_button = fg_color_radio_buttons = fg_color_slide_panels = fg_color_window_frame_panel
-        fg_color_labels = fg_color_results_frame_panel = fg_color_window_frame_panel
+        fg_color_results_frame_panel = fg_color_window_frame_panel
         fg_color_nums = '#fafbfd'
-        hv_color_nums = '#d4d1d0'
-        bg_color_nums = '#FFFFFF'
         fg_color_slide_panel_button = '#FFFFFF'
         fg_color_operations = '#f8f8ff'
-        hv_color_operations = '#f4f4f4'
-        bg_color_operations = '#FFFFFF'
         fg_color_backspace = '#e3f2fd'
-        hv_color_backspace = '#f0f8ff'
         fg_color_divider = '#000000'
-        text_color_settings = text_color = 'black'
+        hv_color_nums = '#d4d1d0'
+        hv_color_operations = '#f4f4f4'
+        hv_color_backspace = '#f0f8ff'
         hv_color_settings_button = hv_color_nums
-        hv_color_radio_buttons = 'black'
+        bg_color_nums = '#FFFFFF'
+        bg_color_operations = '#FFFFFF'
+        text_color_settings = text_color = 'black'
     elif value == 2:
         fg_color_window_frame_panel = '#000000'
         fg_color_radio_buttons = fg_color_slide_panels = fg_color_window_frame_panel
-        fg_color_labels = fg_color_results_frame_panel = fg_color_window_frame_panel
+        fg_color_results_frame_panel = fg_color_window_frame_panel
         fg_color_setting_button = '#C0C0C0'  
         fg_color_nums = '#000000'
         fg_color_slide_panel_button = '#d0d0d0'
-        hv_color_nums = '#191919'
-        bg_color_nums = '#000000'
         fg_color_operations = '#c35831'
-        hv_color_operations = '#c57360'
-        bg_color_operations = '#000000'
         fg_color_backspace = '#f8f8ff'
-        hv_color_backspace = '#d4d1d0'
         fg_color_divider = '#FFFFFF'
-        text_color = 'white'
-        text_color_settings = 'black'
-        hv_color_radio_buttons = 'white'
         hv_color_settings_button = hv_color_nums
+        hv_color_operations = '#c57360'
+        hv_color_nums = '#191919'
+        hv_color_backspace = '#d4d1d0'
+        bg_color_nums = '#000000'
+        bg_color_operations = '#000000'
+        text_color = 'white'
+        text_color_settings = 'white'
     elif value == 3:
-        fg_color_window_frame_panel = ['gray92', 'gray14'] 
+        fg_color_window_frame_panel = "#292929"  
         fg_color_slide_panels = ['gray86', 'gray17']
         fg_color_radio_buttons = '#292929'
         fg_color_nums = '#7c87e7'
-        hv_color_nums = '#6B78D3'
-        bg_color_nums = '#292929'
         fg_color_slide_panel_button = '#7c87e7'
         fg_color_operations = '#2a4993'
-        hv_color_operations = '#233F83'
-        bg_color_operations = '#292929'
         fg_color_backspace = '#2a4993'
-        hv_color_backspace = '#233F83'
         fg_color_divider = '#000000'
+        fg_color_setting_button = '#C0C0C0'   
+        fg_color_results_frame_panel = '#292929'
+        hv_color_nums = '#6B78D3'
+        hv_color_operations = '#233F83'
+        hv_color_backspace = '#233F83'
+        hv_color_settings_button = '#a2a2a2'
+        bg_color_nums = '#292929'
+        bg_color_operations = '#292929'
         text_color = 'white'
         text_color_settings = 'black'
-        hv_color_radio_buttons = 'white'
-        fg_color_setting_button = '#C0C0C0'   
-        fg_color_labels = ['gray92', 'gray14']   
-        fg_color_results_frame_panel = '#292929'
-        hv_color_settings_button = '#a2a2a2'
-
-        
+ 
     window.configure(fg_color=fg_color_window_frame_panel)
     nums_and_operations_frame.configure(fg_color=fg_color_window_frame_panel)
     results_frame.configure(fg_color=fg_color_results_frame_panel)
-    current_operation_statement_label.configure(fg_color=fg_color_window_frame_panel, text_color = text_color)
-    operations_history_statement_label.configure(fg_color=fg_color_window_frame_panel, text_color = text_color)
+    current_operation_statement_label.configure( text_color = text_color)
+    operations_history_statement_label.configure( text_color = text_color)
     for button in number_buttons:
         button.configure(fg_color=fg_color_nums, hover_color=hv_color_nums, bg_color = bg_color_nums, text_color = text_color)
     for i in range(len(operation_buttons)):
@@ -114,15 +108,16 @@ def change_application_theme(value: int):
             operation_buttons[i].configure(fg_color=fg_color_operations, hover_color=hv_color_operations, bg_color = bg_color_operations, text_color = text_color)
     slide_panel.configure(fg_color = fg_color_slide_panels)
     slide_panel_button.configure(fg_color=fg_color_slide_panel_button, hover_color=hv_color_nums)
+    slide_panel.areas_calculator_button.configure(fg_color = fg_color_slide_panels, hover_color = hv_color_settings_button, text_color = text_color_settings, bg_color = text_color)
     slide_panel.settings_button.configure(fg_color = fg_color_setting_button, hover_color = hv_color_settings_button, text_color = text_color_settings)
     slide_panel.divider.configure(fg_color = fg_color_divider)
     settings_panel.configure(fg_color=fg_color_slide_panels)
-    settings_panel.settings_label.configure(fg_color=fg_color_labels, text_color = text_color)
-    settings_panel.themes_label.configure(fg_color=fg_color_labels, text_color = text_color)
+    settings_panel.settings_label.configure(text_color = text_color_settings)
+    settings_panel.themes_label.configure(text_color = text_color_settings)
     settings_panel.divider.configure(fg_color=fg_color_divider)
-    settings_panel.switch1.configure(fg_color=fg_color_radio_buttons, text_color = text_color, hover_color = hv_color_radio_buttons)
-    settings_panel.switch2.configure(fg_color=fg_color_radio_buttons, text_color = text_color, hover_color = hv_color_radio_buttons)
-    settings_panel.switch3.configure(fg_color=fg_color_radio_buttons, text_color = text_color, hover_color = hv_color_radio_buttons)    
+    settings_panel.switch1.configure(fg_color=fg_color_radio_buttons, text_color = text_color_settings)
+    settings_panel.switch2.configure(fg_color=fg_color_radio_buttons, text_color = text_color_settings)
+    settings_panel.switch3.configure(fg_color=fg_color_radio_buttons, text_color = text_color_settings)    
 
 def manage_switches():
     """Deselects all the button in to_deactivate and sets the application\n
@@ -147,8 +142,6 @@ def manage_switches():
     
     change_application_theme(on_switch)
     
-        
-
 def has_decimals(number: str) -> bool:
     '''Returns True if the given number has decimals different to 0'''
     if number.find('.') != -1:
@@ -537,3 +530,6 @@ for i in range(2,6):
     for j in range(0,3):
         number_buttons[index].grid(row=i,column=j, padx=1, pady=1, sticky='nsew')
         index += 1
+
+#The app starts with the Blue theme by default (later changing to the OS theme)
+settings_panel.switch3.toggle()
