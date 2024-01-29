@@ -124,8 +124,7 @@ class SettingsPanel(SlidePanel):
 			self.place(relx = self.pos, relwidth = self.width, relheight = 1.0)
 			self.after(10, self.animate_backwards)
 		else:
-			self.in_start_pos = True
-		
+			self.in_start_pos = True		
 
 class SettingsButton(ctk.CTkButton):
     def __init__(self, parent: ctk, text: str, 
@@ -170,7 +169,7 @@ class BasicCalculator():
 		#       Settings Panel
 		self.settings_panel = SettingsPanel(self.window, -0.5, 0.46, [self.nums_and_operations_frame, self.results_frame])
 		#       Main Slide Panel
-		self.slide_panel = SlidePanel(window, -0.5, 0.1, [self.nums_and_operations_frame, self.results_frame], self.settings_panel.animate)
+		self.slide_panel = SlidePanel(self.window, -0.5, 0.1, [self.nums_and_operations_frame, self.results_frame], self.settings_panel.animate)
 		self.slide_panel.settings_button.configure(hover_color = '#a2a2a2')
 
 		self.settings_panel.switch1.configure(command = self.manage_switches)
