@@ -12,13 +12,14 @@ class Areas_Calculator(Default_Components.BasicCalculator):
         #       Settings Panel
         self.settings_panel = Default_Components.SettingsPanel(self.window, -0.5, 0.46, [self.nums_and_operations_frame, self.results_frame])
         #       Main Slide Panel
-        self.slide_panel = Default_Components.SlidePanel(self.window, -0.5, 0.1, [self.nums_and_operations_frame, self.results_frame], self.settings_panel.animate)
+        self.slide_panel = Default_Components.SlidePanelBackAndForth(self.window, -0.5, 0.1, [self.nums_and_operations_frame, self.results_frame], self.settings_panel.animate)
         self.slide_panel.settings_button.configure(hover_color = '#a2a2a2')
-
+        #       Shape Areas panel
+        self.shape_areas_panel = Default_Components.SlidePanelUpAndDown(self.window, -0.3, 0.3, [self.nums_and_operations_frame, self.results_frame])
+    
         self.settings_panel.switch1.configure(command = self.manage_switches)
         self.settings_panel.switch2.configure(command = self.manage_switches)
         self.settings_panel.switch3.configure(command = self.manage_switches)
-
 
         #Buttons
         # Slide Panel Button
@@ -29,7 +30,11 @@ class Areas_Calculator(Default_Components.BasicCalculator):
         self.slide_panel_button.place(anchor = 'nw')
         # Bind the disable and enable functions to the slide panel button
         self.slide_panel_button.bind('<Button-1>', lambda event: self.manage_buttons(event) if self.slide_panel.is_active else self.manage_buttons(event))
-        
+        # Shape button
+        self.shape_button = Default_Components.ctk.CTkButton(master=self.window, text='Shape´s area', command=self.shape_areas_panel.animate, font=self.my_font)
+        self.shape_button.lift(self.shape_areas_panel)
+        self.shape_button.place(relx = 0.45, rely = 0.02, relwidth = 0.2, relheight  =0.1)
+        self.shape_button.bind('<Button-1>', lambda event: self.manage_buttons(event) if self.shape_areas_panel.is_active else self.manage_buttons(event))
 
         # Set the weight for each row and column
         for i in range(4):
@@ -51,12 +56,19 @@ class Areas_Calculator(Default_Components.BasicCalculator):
         self.number_buttons[9].grid(row=3,column=0, padx=1, pady=1, sticky='nsew')
         self.number_buttons[11].grid(row=3,column=1, padx=1, pady=1, sticky='nsew')
         
-        # Shape button
-        shape_button = Default_Components.ctk.CTkButton(master=self.results_frame, text='hello')
-        shape_button.place(relx = 0.43, rely = 0.2, relwidth = 0.2, relheight  =0.2)
 
         # Operators textboxes
-        self.operator_1 = Default_Components.ctk.CTkTextbox(master=self.results_frame, font=self.my_font).place(relx = 0.2, rely = 0.45, relwidth = 0.3,relheight = 0.2)
+        self.operator_1 = Default_Components.ctk.CTkTextbox(master=self.results_frame,font=self.my_font)
+        self.operator_1.insert(1.0, '0')
+        self.operator_1.place(relx = 0.5, rely = 0.45, relwidth = 0.3,relheight = 0.2)
+
+
+        # Labels
+        #   Area formula
+        self.area_formula = Default_Components.ctk.CTkLabel(master=self.results_frame).place(relx = 0.2, rely = 0.45, relwidth = 0.3,relheight = 0.2)
+        self.results_label = Default_Components.ctk.CTkLabel(master=self.results_frame, font=self.my_font, textvariable=self.current_operation_statement,
+                            fg_color="red")
+        self.results_label.place(relx=0.0, rely=0.7, relwidth = 1, relheight = 0.4)
 
         #The app starts with the Blue theme by default (later changing to the OS theme)
         self.settings_panel.switch3.toggle()
@@ -160,9 +172,11 @@ class Areas_Calculator(Default_Components.BasicCalculator):
             for i in range(len(self.number_buttons)):
                 if i != 10:
                     self.number_buttons[i].configure(state='disabled')            
+            self.operator_1.configure(state='disabled')
             self.side_panel_active = True
         else:
             for i in range(len(self.number_buttons)):
                 if i != 10:
                     self.number_buttons[i].configure(state='normal')        
+            self.operator_1.configure(state='normal')
             self.side_panel_active = False

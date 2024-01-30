@@ -3,7 +3,7 @@ from PIL import Image, ImageTk
 import Operation
 
 
-class SlidePanel(ctk.CTkFrame):
+class SlidePanelBackAndForth(ctk.CTkFrame):
 	def __init__(self, parent:ctk, start_pos:float, end_pos:float, above_these_frames: list,
 			  settings_button_command: callable = None):
 		super().__init__(master = parent)
@@ -74,7 +74,59 @@ class SlidePanel(ctk.CTkFrame):
 		else:
 			self.in_start_pos = True
 
-class SettingsPanel(SlidePanel):
+class SlidePanelUpAndDown(ctk.CTkFrame):
+	def __init__(self, parent:ctk, start_pos:float, end_pos:float, above_these_frames: list,):
+		super().__init__(master = parent)
+
+		# general attributes 
+		self.start_pos = start_pos - 0.6
+		self.end_pos = end_pos
+		self.width = 0.5
+		self.aboabove_these_frames = above_these_frames
+
+		# animation logic
+		self.pos = self.start_pos
+		self.in_start_pos = True
+
+		# layout
+		self.place(relx = 0.25,rely = self.start_pos, relwidth = self.width, relheight = 0.5)
+
+	def is_active(self):
+		"""Returns True if the panel is in the end position, 
+		\nFalse otherwise"""
+		return self.pos == self.end_pos
+
+	def animate(self):
+		"""Animates the panel to the end position if 
+		it is \nin the start position"""
+		if self.in_start_pos:
+			self.animate_down()
+			try:
+				self.lift(aboveThis=self.aboabove_these_frames)
+			except:
+				pass
+		else:
+			self.animate_up()
+
+	def animate_down(self):
+		"""Animates the panel to the bottom position"""
+		if self.pos < self.end_pos:
+			self.pos += 0.06
+			self.place(rely=self.pos, relwidth=self.width, relheight = 0.5)
+			self.after(10, self.animate_down)
+		else:
+			self.in_start_pos = False
+
+	def animate_up(self):
+		"""Animates the panel to the top position"""
+		if self.pos > self.start_pos:
+			self.pos -= 0.06
+			self.place(rely=self.pos, relwidth=self.width, relheight = 0.5)
+			self.after(10, self.animate_up)
+		else:
+			self.in_start_pos = True
+
+class SettingsPanel(SlidePanelBackAndForth):
 
 	def __init__(self, parent:ctk, start_pos:float, end_pos:float, above_these_frames: list):
 		super().__init__(parent, start_pos, end_pos, above_these_frames)
@@ -169,7 +221,7 @@ class BasicCalculator():
 		#       Settings Panel
 		self.settings_panel = SettingsPanel(self.window, -0.5, 0.46, [self.nums_and_operations_frame, self.results_frame])
 		#       Main Slide Panel
-		self.slide_panel = SlidePanel(self.window, -0.5, 0.1, [self.nums_and_operations_frame, self.results_frame], self.settings_panel.animate)
+		self.slide_panel = SlidePanelBackAndForth(self.window, -0.5, 0.1, [self.nums_and_operations_frame, self.results_frame], self.settings_panel.animate)
 		self.slide_panel.settings_button.configure(hover_color = '#a2a2a2')
 
 		self.settings_panel.switch1.configure(command = self.manage_switches)
