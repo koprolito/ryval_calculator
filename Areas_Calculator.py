@@ -1,9 +1,9 @@
 import Default_Components
 
 class Areas_Calculator(Default_Components.BasicCalculator):
-    def __init__(self, parent) -> None:
+    def __init__(self, parent: Default_Components.ctk, area_to_calculate: str) -> None:
         super().__init__(parent)
-
+        
         self.num_textboxes = 1
         self.nums_and_operations_frame.place(relx = 0.0, rely = 0.5, relwidth = 1, relheight = 0.5)
         self.results_frame.place(relx = 0.0, rely = 0.0, relwidth = 1, relheight = 0.5)       
@@ -31,9 +31,9 @@ class Areas_Calculator(Default_Components.BasicCalculator):
         # Bind the disable and enable functions to the slide panel button
         self.slide_panel_button.bind('<Button-1>', lambda event: self.manage_buttons(event) if self.slide_panel.is_active else self.manage_buttons(event))
         # Shape button
-        self.shape_button = Default_Components.ctk.CTkButton(master=self.window, text='Shape´s area', command=self.shape_areas_panel.animate, font=self.my_font)
+        self.shape_button = Default_Components.ctk.CTkButton(master=self.window, text='\u2193', command=self.shape_areas_panel.animate, font=self.my_font, width= 0.1, height  =0.1)
         self.shape_button.lift(self.shape_areas_panel)
-        self.shape_button.place(relx = 0.45, rely = 0.02, relwidth = 0.2, relheight  =0.1)
+        self.shape_button.place(relx = 0.5, rely = 0.0)
         self.shape_button.bind('<Button-1>', lambda event: self.manage_buttons(event) if self.shape_areas_panel.is_active else self.manage_buttons(event))
 
         # Set the weight for each row and column
@@ -56,19 +56,18 @@ class Areas_Calculator(Default_Components.BasicCalculator):
         self.number_buttons[9].grid(row=3,column=0, padx=1, pady=1, sticky='nsew')
         self.number_buttons[11].grid(row=3,column=1, padx=1, pady=1, sticky='nsew')
         
+        # Create the textboxes according the area to calculate
+        if area_to_calculate == "Circle":
+            self.canvas = Default_Components.ctk.CTkCanvas(master=self.results_frame, bg = 'black')
+            self.canvas.place(relx = 0.3, rely = 0.4, relwidth = 0.3, relheight = 0.5)
+            self.circle = self.canvas.create_oval(0,0,100,100, fill = 'white')
+            self.pi_label = Default_Components.ctk.CTkLabel(master=self.results_frame, text = '\u03C0 x', font=self.my_font, text_color = 'white')
+            self.pi_label.place(relx = 0.7, rely = 0.3, relwidth = 0.1,relheight = 0.18)
+            self.textbox = Default_Components.ctk.CTkTextbox(master=self.results_frame,font=self.my_font)
+            self.textbox.insert(1.0, '0')
+            self.textbox.place(relx = 0.7, rely = 0.45, relwidth = 0.3,relheight = 0.18)
 
-        # Operators textboxes
-        self.operator_1 = Default_Components.ctk.CTkTextbox(master=self.results_frame,font=self.my_font)
-        self.operator_1.insert(1.0, '0')
-        self.operator_1.place(relx = 0.5, rely = 0.45, relwidth = 0.3,relheight = 0.2)
-
-
-        # Labels
-        #   Area formula
-        self.area_formula = Default_Components.ctk.CTkLabel(master=self.results_frame).place(relx = 0.2, rely = 0.45, relwidth = 0.3,relheight = 0.2)
-        self.results_label = Default_Components.ctk.CTkLabel(master=self.results_frame, font=self.my_font, textvariable=self.current_operation_statement,
-                            fg_color="red")
-        self.results_label.place(relx=0.0, rely=0.7, relwidth = 1, relheight = 0.4)
+        self.current_operation_statement_label.place(relx=0.95, rely=0.9, anchor='se')
 
         #The app starts with the Blue theme by default (later changing to the OS theme)
         self.settings_panel.switch3.toggle()
@@ -166,6 +165,7 @@ class Areas_Calculator(Default_Components.BasicCalculator):
         self.settings_panel.switch3.configure(fg_color=fg_color_radio_buttons, text_color = text_color_settings)    
 
     def manage_buttons(self,event) -> None:
+
         '''Disable or enable the buttons when the slide panel is active'''
 
         if not self.side_panel_active:
@@ -180,3 +180,24 @@ class Areas_Calculator(Default_Components.BasicCalculator):
                     self.number_buttons[i].configure(state='normal')        
             self.operator_1.configure(state='normal')
             self.side_panel_active = False
+    
+    def manage_area_to_calculate(self, area_to_calculate) -> None:
+        '''Method for managing the view according to the area to calculate'''
+
+        # Remove all widgets from the window
+        for widget in self.window.winfo_children():
+            widget.destroy()
+
+        if area_to_calculate == "Circle":
+            self.areas_calculator = Areas_Calculator(self.window, "Circle")
+
+    def update_current_operation_statement(self,stmt: str) -> None:
+        '''Updates the current operation statement label with the given statement
+        \nIt operates with the given statement and the current operation statement'''
+
+        """if stmt == ".":
+            if 
+        elif stmt in "123456789"""
+
+        #Update the current operation statement label
+        self.current_operation_statement_label.configure(textvariable=self.current_operation_statement)

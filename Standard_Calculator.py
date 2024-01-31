@@ -12,4 +12,4 @@ class Standard_Calculator(Default_Components.BasicCalculator):
             widget.destroy()
 
         # Create the Areas Calculator in the current window
-        self.areas_calculator = Areas_Calculator.Areas_Calculator(self.window)
+        self.areas_calculator = Areas_Calculator.Areas_Calculator(self.window, "Circle")
