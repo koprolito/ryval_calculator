@@ -51,21 +51,58 @@ class Areas_Calculator(Default_Components.BasicCalculator):
         for i in range(3):
             for j in range(3):
                  if self.number_buttons[index] != None:
+                    self.number_buttons[index].configure(command = lambda x=self.number_buttons[index].cget("text"): self.update_current_operation_statement(str(x)))
                     self.number_buttons[index].grid(row=i,column=j, padx=1, pady=1, sticky='nsew')
                  index+=1
+        self.number_buttons[9].configure(command = lambda x=self.number_buttons[index].cget("text"): self.update_current_operation_statement(str(x)))
         self.number_buttons[9].grid(row=3,column=0, padx=1, pady=1, sticky='nsew')
+        self.number_buttons[11].configure(command = lambda x=self.number_buttons[index].cget("text"): self.update_current_operation_statement(str(x)))
         self.number_buttons[11].grid(row=3,column=1, padx=1, pady=1, sticky='nsew')
         
         # Create the textboxes according the area to calculate
         if area_to_calculate == "Circle":
             self.canvas = Default_Components.ctk.CTkCanvas(master=self.results_frame, bg = 'black')
-            self.canvas.place(relx = 0.3, rely = 0.4, relwidth = 0.3, relheight = 0.5)
-            self.circle = self.canvas.create_oval(0,0,100,100, fill = 'white')
-            self.pi_label = Default_Components.ctk.CTkLabel(master=self.results_frame, text = '\u03C0 x', font=self.my_font, text_color = 'white')
-            self.pi_label.place(relx = 0.7, rely = 0.3, relwidth = 0.1,relheight = 0.18)
-            self.textbox = Default_Components.ctk.CTkTextbox(master=self.results_frame,font=self.my_font)
-            self.textbox.insert(1.0, '0')
-            self.textbox.place(relx = 0.7, rely = 0.45, relwidth = 0.3,relheight = 0.18)
+            self.canvas.place(relx = 0.05, rely = 0.3, relwidth = 0.5, relheight = 0.6)
+            self.canvas.bind('<Configure>', self.draw_circle)
+            self.formula_label = Default_Components.ctk.CTkLabel(master=self.results_frame, text = '\u03C0 x r^2', font=self.my_font, text_color = 'white')
+            self.formula_label.place(relx = 0.7, rely = 0.3, relwidth = 0.2,relheight = 0.2)
+            self.r_label = Default_Components.ctk.CTkLabel(master=self.results_frame, text="r=", font=self.my_font, text_color='white')
+            self.r_label.place(relx=0.65, rely=0.45, relwidth=0.05, relheight=0.18)
+            self.textbox_1 = Default_Components.ctk.CTkTextbox(master=self.results_frame,font=self.my_font)
+            self.textbox_1.insert(1.0, '0')
+            self.textbox_1.place(relx = 0.7, rely = 0.45, relwidth = 0.2,relheight = 0.18)
+        elif area_to_calculate == "Square":
+            self.canvas = Default_Components.ctk.CTkCanvas(master=self.results_frame, bg = 'black')
+            self.canvas.place(relx = 0.1, rely = 0.3, relwidth = 0.5, relheight = 0.6)
+            self.canvas.bind('<Configure>', self.draw_square)
+            self.formula_label = Default_Components.ctk.CTkLabel(master=self.results_frame, text = 'b^2', font=self.my_font, text_color = 'white')
+            self.formula_label.place(relx = 0.7, rely = 0.3, relwidth = 0.2,relheight = 0.2)
+            self.base_label = Default_Components.ctk.CTkLabel(master=self.results_frame, text="b=", font=self.my_font, text_color='white')
+            self.base_label.place(relx=0.6, rely=0.45, relwidth=0.1, relheight=0.2)
+            self.textbox_1 = Default_Components.ctk.CTkTextbox(master=self.results_frame,font=self.my_font)
+            self.textbox_1.insert(1.0, '0')
+            self.textbox_1.place(relx = 0.7, rely = 0.45, relwidth = 0.2,relheight = 0.18)
+        elif area_to_calculate == "Triangle":
+            self.canvas = Default_Components.ctk.CTkCanvas(master=self.results_frame, bg='black')
+            self.canvas.place(relx=0.1, rely=0.3, relwidth=0.5, relheight=0.6)
+            self.canvas.bind('<Configure>', self.draw_triangle)
+            self.formula_label = Default_Components.ctk.CTkLabel(master=self.results_frame, text = '(b x h)/2', font=self.my_font, text_color = 'white')
+            self.formula_label.place(relx = 0.65, rely = 0.15, relwidth = 0.3,relheight = 0.3)
+            self.textbox_1 = Default_Components.ctk.CTkTextbox(master=self.results_frame,font=self.my_font)
+            self.textbox_1.insert(1.0, '0')
+            self.textbox_1.place(relx = 0.7, rely = 0.35, relwidth = 0.2,relheight = 0.18)
+            self.textbox_2 = Default_Components.ctk.CTkTextbox(master=self.results_frame,font=self.my_font)
+            self.textbox_2.insert(1.0, '0')
+            self.base_label = Default_Components.ctk.CTkLabel(master=self.results_frame, text="b=", font=self.my_font, text_color='white')
+            self.base_label.place(relx=0.6, rely=0.35, relwidth=0.1, relheight=0.2)
+            self.height_label = Default_Components.ctk.CTkLabel(master=self.results_frame, text="h=", font=self.my_font, text_color='white')
+            self.height_label.place(relx=0.6, rely=0.55, relwidth=0.1, relheight=0.2)
+            self.textbox_2.place(relx = 0.7, rely = 0.55, relwidth = 0.2,relheight = 0.18)
+
+        # Link the validate_dot function to the textboxes
+        self.textbox_1.bind("<Key>", self.validate_dot)
+        self.textbox_2.bind("<Key>", self.validate_dot)
+
 
         self.current_operation_statement_label.place(relx=0.95, rely=0.9, anchor='se')
 
@@ -165,23 +202,23 @@ class Areas_Calculator(Default_Components.BasicCalculator):
         self.settings_panel.switch3.configure(fg_color=fg_color_radio_buttons, text_color = text_color_settings)    
 
     def manage_buttons(self,event) -> None:
-
         '''Disable or enable the buttons when the slide panel is active'''
-
         if not self.side_panel_active:
             for i in range(len(self.number_buttons)):
                 if i != 10:
                     self.number_buttons[i].configure(state='disabled')            
-            self.operator_1.configure(state='disabled')
+            self.textbox_1.configure(state='disabled')
+            self.textbox_2.configure(state='disabled')
             self.side_panel_active = True
         else:
             for i in range(len(self.number_buttons)):
                 if i != 10:
                     self.number_buttons[i].configure(state='normal')        
-            self.operator_1.configure(state='normal')
+            self.textbox_1.configure(state='normal')
+            self.textbox_2.configure(state='normal')
             self.side_panel_active = False
     
-    def manage_area_to_calculate(self, area_to_calculate) -> None:
+    def manage_area_to_calculate(self, area_to_calculate: str) -> None:
         '''Method for managing the view according to the area to calculate'''
 
         # Remove all widgets from the window
@@ -195,9 +232,85 @@ class Areas_Calculator(Default_Components.BasicCalculator):
         '''Updates the current operation statement label with the given statement
         \nIt operates with the given statement and the current operation statement'''
 
-        """if stmt == ".":
-            if 
-        elif stmt in "123456789"""
+        # Obtain the focused widget
+        focused_widget = self.window.focus_get()
+
+        # Prove if the focused widget is a textbox
+        if focused_widget == self.textbox_1:
+            if stmt == ".":
+                if "." in self.textbox_1.get(1.0, 'end-1c'):
+                    return None
+                else:
+                    self.textbox_1.insert('end', stmt)
+            elif stmt in "1234567890":
+                if self.textbox_1.get(1.0, 'end-1c') == "0":
+                    self.textbox_1.delete(1.0, 'end')
+                    self.textbox_1.insert('end', stmt)
+                else:
+                    self.textbox_1.insert('end', stmt)
+        elif focused_widget == self.textbox_2:
+            if stmt == ".":
+                if "." in self.textbox_1.get(1.0, 'end-1c'):
+                    return None
+                else:
+                    self.textbox_1.insert('end', stmt)
+            elif stmt in "1234567890":
+                if self.textbox_1.get(1.0, 'end-1c') == "0":
+                    self.textbox_1.delete(1.0, 'end')
+                    self.textbox_1.insert('end', stmt)
+                else:
+                    self.textbox_1.insert('end', stmt)
+        else:
+            print()
+            #Logic for a messagebox
 
         #Update the current operation statement label
         self.current_operation_statement_label.configure(textvariable=self.current_operation_statement)
+
+    def draw_circle(self,event) -> None:
+        '''Method for drawing a circle in the canvas'''
+        # Delete all the elements in the canvas
+        self.canvas.delete('all')
+
+        # Obtain the width and height of the canvas
+        width = self.canvas.winfo_width()
+        height = self.canvas.winfo_height()
+
+        # Draw the circle
+        self.canvas.create_oval(0, 0, width, height, fill='white')
+
+    def draw_square(self, event) -> None:
+        '''Method for drawing a square in the canvas'''
+        # Delete all the elements in the canvas
+        self.canvas.delete('all')
+
+        # Obtain the width and height of the canvas
+        width = self.canvas.winfo_width()
+        height = self.canvas.winfo_height()
+
+        # Draw the full square
+        self.canvas.create_rectangle(0, 0, width, height)
+
+        # Draw a smaller square inside the original square
+        # This will fill a portion of the original square with white
+        self.canvas.create_rectangle(width*0.15, height*0.15, width*0.85, height*0.85, fill='white')
+
+    def draw_triangle(self, event):
+
+        # Delete all the elements in the canvas
+        self.canvas.delete('all')
+
+        # Obtain the width and height of the canvas
+        width = self.canvas.winfo_width()
+        height = self.canvas.winfo_height()
+
+        # Draw the triangle
+        self.canvas.create_polygon([(width / 2, 0), (0, height), (width, height)], fill='white')
+
+    def validate_dot(self,event):
+        # Obtaining the current text in the textbox
+        current_text = event.widget.get("1.0", 'end-1c')
+
+        # Verify if the dot is already in the textbox
+        if event.char == "." and "." in current_text:
+            return None
