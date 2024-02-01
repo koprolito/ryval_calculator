@@ -1,9 +1,11 @@
+from tkinter import Event
 import Default_Components
 
 class Areas_Calculator(Default_Components.BasicCalculator):
     def __init__(self, parent: Default_Components.ctk, area_to_calculate: str) -> None:
         super().__init__(parent)
         
+        self.focused_widget = None
         self.num_textboxes = 1
         self.nums_and_operations_frame.place(relx = 0.0, rely = 0.5, relwidth = 1, relheight = 0.5)
         self.results_frame.place(relx = 0.0, rely = 0.0, relwidth = 1, relheight = 0.5)       
@@ -54,9 +56,9 @@ class Areas_Calculator(Default_Components.BasicCalculator):
                     self.number_buttons[index].configure(command = lambda x=self.number_buttons[index].cget("text"): self.update_current_operation_statement(str(x)))
                     self.number_buttons[index].grid(row=i,column=j, padx=1, pady=1, sticky='nsew')
                  index+=1
-        self.number_buttons[9].configure(command = lambda x=self.number_buttons[index].cget("text"): self.update_current_operation_statement(str(x)))
+        self.number_buttons[9].configure(command = lambda x=self.number_buttons[9].cget("text"): self.update_current_operation_statement(str(x)))
         self.number_buttons[9].grid(row=3,column=0, padx=1, pady=1, sticky='nsew')
-        self.number_buttons[11].configure(command = lambda x=self.number_buttons[index].cget("text"): self.update_current_operation_statement(str(x)))
+        self.number_buttons[11].configure(command = lambda x=self.number_buttons[11].cget("text"): self.update_current_operation_statement(str(x)))
         self.number_buttons[11].grid(row=3,column=1, padx=1, pady=1, sticky='nsew')
         
         # Create the textboxes according the area to calculate
@@ -99,9 +101,9 @@ class Areas_Calculator(Default_Components.BasicCalculator):
             self.height_label.place(relx=0.6, rely=0.55, relwidth=0.1, relheight=0.2)
             self.textbox_2.place(relx = 0.7, rely = 0.55, relwidth = 0.2,relheight = 0.18)
 
-        # Link the validate_dot function to the textboxes
-        self.textbox_1.bind("<Key>", self.validate_dot)
-        self.textbox_2.bind("<Key>", self.validate_dot)
+        # Link function to the textboxes
+        self.textbox_1.bind("<FocusIn>", self.update_focused_widget)
+        self.textbox_2.bind("<FocusIn>", self.update_focused_widget)
 
 
         self.current_operation_statement_label.place(relx=0.95, rely=0.9, anchor='se')
@@ -228,41 +230,29 @@ class Areas_Calculator(Default_Components.BasicCalculator):
         if area_to_calculate == "Circle":
             self.areas_calculator = Areas_Calculator(self.window, "Circle")
 
-    def update_current_operation_statement(self,stmt: str) -> None:
+    def update_focused_widget(self, event):
+        # Update the focused widget
+        self.focused_widget = event.widget
+
+    def update_current_operation_statement(self, stmt: str) -> None:
         '''Updates the current operation statement label with the given statement
         \nIt operates with the given statement and the current operation statement'''
 
-        # Obtain the focused widget
-        focused_widget = self.window.focus_get()
-
         # Prove if the focused widget is a textbox
-        if focused_widget == self.textbox_1:
-            if stmt == ".":
-                if "." in self.textbox_1.get(1.0, 'end-1c'):
-                    return None
-                else:
-                    self.textbox_1.insert('end', stmt)
-            elif stmt in "1234567890":
-                if self.textbox_1.get(1.0, 'end-1c') == "0":
-                    self.textbox_1.delete(1.0, 'end')
-                    self.textbox_1.insert('end', stmt)
-                else:
-                    self.textbox_1.insert('end', stmt)
-        elif focused_widget == self.textbox_2:
-            if stmt == ".":
-                if "." in self.textbox_1.get(1.0, 'end-1c'):
-                    return None
-                else:
-                    self.textbox_1.insert('end', stmt)
-            elif stmt in "1234567890":
-                if self.textbox_1.get(1.0, 'end-1c') == "0":
-                    self.textbox_1.delete(1.0, 'end')
-                    self.textbox_1.insert('end', stmt)
-                else:
-                    self.textbox_1.insert('end', stmt)
-        else:
+        if stmt not in "1234567890." or self.focused_widget == None:
             print()
             #Logic for a messagebox
+        elif stmt == ".":
+            if "." in self.focused_widget.get(1.0, 'end-1c'):
+                return None
+            else:
+                self.focused_widget.insert('end', stmt)
+        elif stmt in "1234567890":
+            if self.focused_widget.get(1.0, 'end-1c') == "0":
+                self.focused_widget.delete(1.0, 'end')
+                self.focused_widget.insert('end', stmt)
+            else:
+                self.focused_widget.insert('end', stmt)
 
         #Update the current operation statement label
         self.current_operation_statement_label.configure(textvariable=self.current_operation_statement)
@@ -306,11 +296,3 @@ class Areas_Calculator(Default_Components.BasicCalculator):
 
         # Draw the triangle
         self.canvas.create_polygon([(width / 2, 0), (0, height), (width, height)], fill='white')
-
-    def validate_dot(self,event):
-        # Obtaining the current text in the textbox
-        current_text = event.widget.get("1.0", 'end-1c')
-
-        # Verify if the dot is already in the textbox
-        if event.char == "." and "." in current_text:
-            return None
