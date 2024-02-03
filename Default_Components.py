@@ -32,9 +32,12 @@ class SlidePanelBackAndForth(ctk.CTkFrame):
 		self.settings_button.configure(corner_radius=0)
 
 		# Areas calculator button
+		self.standard_calculator_button = ctk.CTkButton(master=self, text="Standard Calculator", 
+			fg_color="#C0C0C0", text_color="black", command=None, height=65)
+		self.standard_calculator_button.place(relx=0, rely=0.1, relwidth=1)
 		self.areas_calculator_button = ctk.CTkButton(master=self, text="Areas Calculator", 
 			fg_color="#C0C0C0", text_color="black", command=None, height=65)
-		self.areas_calculator_button.place(relx=0, rely=0.1, relwidth=1)
+		self.areas_calculator_button.place(relx=0, rely=0.23, relwidth=1)
 
 		# layout
 		self.place(relx = self.start_pos, relwidth = self.width, relheight = 1.0)

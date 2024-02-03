@@ -1,14 +1,17 @@
+import cmath
 from tkinter import Event
 import Default_Components
+import Standard_Calculator
 
 class Areas_Calculator(Default_Components.BasicCalculator):
     def __init__(self, parent: Default_Components.ctk, area_to_calculate: str) -> None:
         super().__init__(parent)
-        
+
+        self.area_to_calculate = area_to_calculate
         self.focused_widget = None
         self.num_textboxes = 1
         self.nums_and_operations_frame.place(relx = 0.0, rely = 0.5, relwidth = 1, relheight = 0.5)
-        self.results_frame.place(relx = 0.0, rely = 0.0, relwidth = 1, relheight = 0.5)       
+        self.results_frame.place(relx = 0.0, rely = 0.0, relwidth = 1, relheight = 0.5)   
 
         #   Animated Slide Panels
         #       Settings Panel
@@ -16,9 +19,25 @@ class Areas_Calculator(Default_Components.BasicCalculator):
         #       Main Slide Panel
         self.slide_panel = Default_Components.SlidePanelBackAndForth(self.window, -0.5, 0.1, [self.nums_and_operations_frame, self.results_frame], self.settings_panel.animate)
         self.slide_panel.settings_button.configure(hover_color = '#a2a2a2')
+        self.slide_panel.standard_calculator_button.configure(command = self.open_standard_calculator, state = 'normal')
+        self.slide_panel.areas_calculator_button.configure(command = None, state = 'disabled')    
         #       Shape Areas panel
         self.shape_areas_panel = Default_Components.SlidePanelUpAndDown(self.window, -0.3, 0.3, [self.nums_and_operations_frame, self.results_frame])
     
+        #   Set the switches for the shape_slide_panel in order to change between shapes
+        self.shapes_to_calculate = []
+        self.shape_var = Default_Components.ctk.StringVar()
+        shapes = ['Circle', 'Square', 'Triangle']
+        for i in range(3):
+            switch_button = Default_Components.ctk.CTkSwitch(master=self.shape_areas_panel, text=shapes[i], variable=self.shape_var,onvalue=shapes[i],offvalue=shapes[i])
+            switch_button.configure(command = self.manage_area_to_calculate)
+            self.shapes_to_calculate.append(switch_button)
+
+        self.shapes_to_calculate[0].place(relx = 0.45, rely = 0.2)
+        self.shapes_to_calculate[1].place(relx = 0.45, rely = 0.4)
+        self.shapes_to_calculate[2].place(relx = 0.45, rely = 0.6)
+
+        #   Do the same with the commands of the switches of the settings_panel
         self.settings_panel.switch1.configure(command = self.manage_switches)
         self.settings_panel.switch2.configure(command = self.manage_switches)
         self.settings_panel.switch3.configure(command = self.manage_switches)
@@ -62,39 +81,39 @@ class Areas_Calculator(Default_Components.BasicCalculator):
         self.number_buttons[11].grid(row=3,column=1, padx=1, pady=1, sticky='nsew')
         
         # Create the textboxes according the area to calculate
-        if area_to_calculate == "Circle":
+        if self.area_to_calculate == "Circle":
             self.canvas = Default_Components.ctk.CTkCanvas(master=self.results_frame, bg = 'black')
-            self.canvas.place(relx = 0.05, rely = 0.3, relwidth = 0.5, relheight = 0.6)
+            self.canvas.place(relx = 0.05, rely = 0.3, relwidth = 0.3, relheight = 0.4)
             self.canvas.bind('<Configure>', self.draw_circle)
             self.formula_label = Default_Components.ctk.CTkLabel(master=self.results_frame, text = '\u03C0 x r^2', font=self.my_font, text_color = 'white')
             self.formula_label.place(relx = 0.7, rely = 0.3, relwidth = 0.2,relheight = 0.2)
             self.r_label = Default_Components.ctk.CTkLabel(master=self.results_frame, text="r=", font=self.my_font, text_color='white')
             self.r_label.place(relx=0.65, rely=0.45, relwidth=0.05, relheight=0.18)
-            self.textbox_1 = Default_Components.ctk.CTkTextbox(master=self.results_frame,font=self.my_font)
-            self.textbox_1.insert(1.0, '0')
+            self.textbox_1 = Default_Components.ctk.CTkEntry(master=self.results_frame,font=self.my_font)
+            self.textbox_1.insert(0, '0')
             self.textbox_1.place(relx = 0.7, rely = 0.45, relwidth = 0.2,relheight = 0.18)
-        elif area_to_calculate == "Square":
+        elif self.area_to_calculate == "Square":
             self.canvas = Default_Components.ctk.CTkCanvas(master=self.results_frame, bg = 'black')
-            self.canvas.place(relx = 0.1, rely = 0.3, relwidth = 0.5, relheight = 0.6)
+            self.canvas.place(relx = 0.1, rely = 0.3, relwidth = 0.3, relheight = 0.4)
             self.canvas.bind('<Configure>', self.draw_square)
             self.formula_label = Default_Components.ctk.CTkLabel(master=self.results_frame, text = 'b^2', font=self.my_font, text_color = 'white')
             self.formula_label.place(relx = 0.7, rely = 0.3, relwidth = 0.2,relheight = 0.2)
             self.base_label = Default_Components.ctk.CTkLabel(master=self.results_frame, text="b=", font=self.my_font, text_color='white')
             self.base_label.place(relx=0.6, rely=0.45, relwidth=0.1, relheight=0.2)
-            self.textbox_1 = Default_Components.ctk.CTkTextbox(master=self.results_frame,font=self.my_font)
-            self.textbox_1.insert(1.0, '0')
-            self.textbox_1.place(relx = 0.7, rely = 0.45, relwidth = 0.2,relheight = 0.18)
-        elif area_to_calculate == "Triangle":
+            self.textbox_1 = Default_Components.ctk.CTkEntry(master=self.results_frame,font=self.my_font)
+            self.textbox_1.insert(0, '0')
+            self.textbox_1.place(relx = 0.7, rely = 0.45, relwidth = 0.1,relheight = 0.14)
+        elif self.area_to_calculate == "Triangle":
             self.canvas = Default_Components.ctk.CTkCanvas(master=self.results_frame, bg='black')
             self.canvas.place(relx=0.1, rely=0.3, relwidth=0.5, relheight=0.6)
             self.canvas.bind('<Configure>', self.draw_triangle)
             self.formula_label = Default_Components.ctk.CTkLabel(master=self.results_frame, text = '(b x h)/2', font=self.my_font, text_color = 'white')
             self.formula_label.place(relx = 0.65, rely = 0.15, relwidth = 0.3,relheight = 0.3)
-            self.textbox_1 = Default_Components.ctk.CTkTextbox(master=self.results_frame,font=self.my_font)
-            self.textbox_1.insert(1.0, '0')
+            self.textbox_1 = Default_Components.ctk.CTkEntry(master=self.results_frame,font=self.my_font)
+            self.textbox_1.insert(0,'0')
             self.textbox_1.place(relx = 0.7, rely = 0.35, relwidth = 0.2,relheight = 0.18)
-            self.textbox_2 = Default_Components.ctk.CTkTextbox(master=self.results_frame,font=self.my_font)
-            self.textbox_2.insert(1.0, '0')
+            self.textbox_2 = Default_Components.ctk.CTkEntry(master=self.results_frame,font=self.my_font)
+            self.textbox_2.insert(0, '0')
             self.base_label = Default_Components.ctk.CTkLabel(master=self.results_frame, text="b=", font=self.my_font, text_color='white')
             self.base_label.place(relx=0.6, rely=0.35, relwidth=0.1, relheight=0.2)
             self.height_label = Default_Components.ctk.CTkLabel(master=self.results_frame, text="h=", font=self.my_font, text_color='white')
@@ -102,14 +121,19 @@ class Areas_Calculator(Default_Components.BasicCalculator):
             self.textbox_2.place(relx = 0.7, rely = 0.55, relwidth = 0.2,relheight = 0.18)
 
         # Link function to the textboxes
-        self.textbox_1.bind("<FocusIn>", self.update_focused_widget)
-        self.textbox_2.bind("<FocusIn>", self.update_focused_widget)
+        if self.area_to_calculate == 'Triangle':
+            self.textbox_1.bind("<FocusIn>", self.update_focused_widget)
+            self.textbox_2.bind("<FocusIn>", self.update_focused_widget)
+        else:
+            self.textbox_1.bind("<FocusIn>", self.update_focused_widget)            
 
+        self.window.bind('<KeyRelease>', self.validate_number_input)
 
         self.current_operation_statement_label.place(relx=0.95, rely=0.9, anchor='se')
 
-        #The app starts with the Blue theme by default (later changing to the OS theme)
+        #The app starts with the Blue theme and with the Circle shape by default (later changing to the OS theme)
         self.settings_panel.switch3.toggle()
+        self.shapes_to_calculate[0].select()
 
     def change_application_theme(self, value: int):
         '''Method for changing the application theme according to the value,\n
@@ -205,30 +229,51 @@ class Areas_Calculator(Default_Components.BasicCalculator):
 
     def manage_buttons(self,event) -> None:
         '''Disable or enable the buttons when the slide panel is active'''
-        if not self.side_panel_active:
-            for i in range(len(self.number_buttons)):
-                if i != 10:
-                    self.number_buttons[i].configure(state='disabled')            
-            self.textbox_1.configure(state='disabled')
-            self.textbox_2.configure(state='disabled')
-            self.side_panel_active = True
+        if self.area_to_calculate == 'Triangle':
+            if not self.side_panel_active:
+                for i in range(len(self.number_buttons)):
+                    if i != 10:
+                        self.number_buttons[i].configure(state='disabled')            
+                self.textbox_1.configure(state='disabled')
+                self.textbox_2.configure(state='disabled')
+                self.side_panel_active = True
+            else:
+                for i in range(len(self.number_buttons)):
+                    if i != 10:
+                        self.number_buttons[i].configure(state='normal')        
+                self.textbox_1.configure(state='normal')
+                self.textbox_2.configure(state='normal')
+                self.side_panel_active = False
         else:
-            for i in range(len(self.number_buttons)):
-                if i != 10:
-                    self.number_buttons[i].configure(state='normal')        
-            self.textbox_1.configure(state='normal')
-            self.textbox_2.configure(state='normal')
-            self.side_panel_active = False
+            if not self.side_panel_active:
+                for i in range(len(self.number_buttons)):
+                    if i != 10:
+                        self.number_buttons[i].configure(state='disabled')            
+                self.textbox_1.configure(state='disabled')
+                self.side_panel_active = True
+            else:
+                for i in range(len(self.number_buttons)):
+                    if i != 10:
+                        self.number_buttons[i].configure(state='normal')        
+                self.textbox_1.configure(state='normal')                
+                self.side_panel_active = False
     
-    def manage_area_to_calculate(self, area_to_calculate: str) -> None:
+    def manage_area_to_calculate(self) -> None:
         '''Method for managing the view according to the area to calculate'''
 
         # Remove all widgets from the window
         for widget in self.window.winfo_children():
             widget.destroy()
 
-        if area_to_calculate == "Circle":
+        if self.shape_var.get() == "Circle":
             self.areas_calculator = Areas_Calculator(self.window, "Circle")
+            self.areas_calculator.shapes_to_calculate[0].select()
+        elif self.shape_var.get() == "Square":
+            self.areas_calculator = Areas_Calculator(self.window, "Square")
+            self.areas_calculator.shapes_to_calculate[1].select()
+        elif self.shape_var.get() == "Triangle":
+            self.areas_calculator = Areas_Calculator(self.window, "Triangle")
+            self.areas_calculator.shapes_to_calculate[2].select()
 
     def update_focused_widget(self, event):
         # Update the focused widget
@@ -239,22 +284,30 @@ class Areas_Calculator(Default_Components.BasicCalculator):
         \nIt operates with the given statement and the current operation statement'''
 
         # Prove if the focused widget is a textbox
-        if stmt not in "1234567890." or self.focused_widget == None:
-            print()
+        if stmt not in "1234567890." or stmt == '':
+            return
             #Logic for a messagebox
         elif stmt == ".":
-            if "." in self.focused_widget.get(1.0, 'end-1c'):
+            if "." in self.focused_widget.get():
                 return None
             else:
                 self.focused_widget.insert('end', stmt)
         elif stmt in "1234567890":
-            if self.focused_widget.get(1.0, 'end-1c') == "0":
-                self.focused_widget.delete(1.0, 'end')
+            if self.focused_widget.get() == "0":
+                self.focused_widget.delete(0, 'end')
                 self.focused_widget.insert('end', stmt)
             else:
                 self.focused_widget.insert('end', stmt)
 
         #Update the current operation statement label
+        res = 0
+        if self.area_to_calculate == "Circle":
+            res = self.to_int(str((float(self.textbox_1.get())**2)*(cmath.pi)))
+        elif self.area_to_calculate == "Square":
+            res = self.to_int(str(float(self.textbox_1.get())**2))
+        elif self.area_to_calculate == "Triangle":
+            res = self.to_int(str((float(self.textbox_1.get())*float(self.textbox_2.get()))/2))
+        self.current_operation_statement.set(str(res))
         self.current_operation_statement_label.configure(textvariable=self.current_operation_statement)
 
     def draw_circle(self,event) -> None:
@@ -285,7 +338,7 @@ class Areas_Calculator(Default_Components.BasicCalculator):
         # This will fill a portion of the original square with white
         self.canvas.create_rectangle(width*0.15, height*0.15, width*0.85, height*0.85, fill='white')
 
-    def draw_triangle(self, event):
+    def draw_triangle(self, event):        
 
         # Delete all the elements in the canvas
         self.canvas.delete('all')
@@ -296,3 +349,29 @@ class Areas_Calculator(Default_Components.BasicCalculator):
 
         # Draw the triangle
         self.canvas.create_polygon([(width / 2, 0), (0, height), (width, height)], fill='white')
+
+    def validate_number_input(self, event):
+        if self.focused_widget != None and self.focused_widget.get() != '':
+            value = self.focused_widget.get()
+            if value[0] == '0' and '.' not in value:
+                if event.char not in '123456789.':
+                    event.widget.delete(len(event.widget.get()) - 1)
+                    return
+                else:
+                    event.widget.delete(0, 'end')
+                    event.widget.insert(0, event.char)
+            else:
+                if event.char not in '1234567890.':
+                    event.widget.delete(len(event.widget.get()) - 1)
+                    return
+            self.update_current_operation_statement(event.char)
+        else:
+            return
+        
+    def open_standard_calculator(self):
+        # Remove all widgets from the window
+        for widget in self.window.winfo_children():
+            widget.destroy()
+
+        # Create the Standard Calculator in the current window
+        self.standard_calculator = Standard_Calculator.Standard_Calculator(self.window)

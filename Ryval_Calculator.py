@@ -9,6 +9,5 @@ window.geometry('320x450')
 window.iconbitmap('ryval_calculator_icon.ico')
 window.minsize(320,450)
 
-#standard_calculator = Standard_Calculator.Standard_Calculator(window)
-areas_calculator = Areas_Calculator.Areas_Calculator(window, "Triangle")
-areas_calculator.window.mainloop()
+standard_calculator = Standard_Calculator.Standard_Calculator(window)
+standard_calculator.window.mainloop()
