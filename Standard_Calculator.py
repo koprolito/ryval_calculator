@@ -7,7 +7,9 @@ class Standard_Calculator(Default_Components.BasicCalculator):
         self.slide_panel.standard_calculator_button.configure(command = None, state = 'disabled')
         self.slide_panel.areas_calculator_button.configure(command = lambda: self.open_areas_calculator(), state = 'normal')
 
-    def open_areas_calculator(self):
+    def open_areas_calculator(self) -> None:
+        '''Starts up the areas calculator once the correpondent button is clicked'''
+
         # Remove all widgets from the window
         for widget in self.window.winfo_children():
             widget.destroy()

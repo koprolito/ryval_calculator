@@ -1,5 +1,4 @@
 import Standard_Calculator
-import Areas_Calculator
 import customtkinter as ctk
 
 # Main Window

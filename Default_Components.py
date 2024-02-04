@@ -204,7 +204,7 @@ class Label(ctk.CTkLabel):
 		self.place(relx = relx, rely = rely, anchor = anchor)
 
 class BasicCalculator():
-	def __init__(self, window: ctk) -> None:
+	def __init__(self, window: ctk.CTk) -> None:
 		self.window = window #Main window
 		self.side_panel_active = False #Determines if the side panel is active or not
 		self.current_operation_statement = ctk.StringVar() #Stores the current operation statement
@@ -223,9 +223,9 @@ class BasicCalculator():
 		#   Animated Slide Panels
 		#       Settings Panel
 		self.settings_panel = SettingsPanel(self.window, -0.5, 0.46, [self.nums_and_operations_frame, self.results_frame])
+		self.settings_panel.standard_calculator_button.destroy()
 		#       Main Slide Panel
 		self.slide_panel = SlidePanelBackAndForth(self.window, -0.5, 0.1, [self.nums_and_operations_frame, self.results_frame], self.settings_panel.animate)
-		self.slide_panel.settings_button.configure(hover_color = '#a2a2a2')
 
 		self.settings_panel.switch1.configure(command = self.manage_switches)
 		self.settings_panel.switch2.configure(command = self.manage_switches)
@@ -248,17 +248,33 @@ class BasicCalculator():
 		self.slide_panel_button = ctk.CTkButton(self.window, text = '', 
 		width=50,height=40,command = self.manage_brother_panels, 
 		image=ctk.CTkImage(Image.open('sidebar_image.png')), fg_color='#7c87e7', hover_color='#6B78D3')
-		self.slide_panel_button.lift(self.slide_panel)
 		self.slide_panel_button.place(anchor = 'nw')
+		# History Slide Panel
+		self.history_panel = SlidePanelBackAndForth(self.window, -0.5, 0.1, [self.nums_and_operations_frame, self.results_frame, self.slide_panel_button], self.settings_panel.animate)
+		self.history_panel.divider.destroy()		
+		self.history_panel.settings_button.destroy()
+		self.history_panel.areas_calculator_button.destroy()
+		self.history_panel.standard_calculator_button.destroy()
+		self.history_panel_button = ctk.CTkButton(self.window, text = 'H', 
+		width=50,height=40,command = self.manage_history_panel, 
+		 fg_color='#7c87e7', hover_color='#6B78D3')
+		self.history_panel_button.place(relx = 0, rely = 0.2)
+		self.history = ctk.CTkScrollableFrame(master=self.history_panel, label_fg_color='black', label_text_color='white', label_text=self.read_history('standard_history.txt'))
+		self.history.place(relx=0.1, rely=0.1, relwidth = 1, relheight = 1)
+		#	Lift buttons and panels respectively
+		self.history_panel_button.lift(self.history_panel)
+		self.slide_panel.lift(self.history_panel_button)
+		self.slide_panel_button.lift(self.slide_panel)
 		# Bind the disable and enable functions to the slide panel button
 		self.slide_panel_button.bind('<Button-1>', lambda event: self.manage_buttons(event) if self.slide_panel.is_active else self.manage_buttons(event))
+		self.history_panel_button.bind('<Button-1>', lambda event: self.manage_buttons(event) if self.history_panel.is_active else self.manage_buttons(event))
+
 
 		# Set the weight for each row and column
 		for i in range(6):
 			self.nums_and_operations_frame.grid_rowconfigure(i, weight=1)
 			for j in range(4):
 				self.nums_and_operations_frame.grid_columnconfigure(j, weight=1)
-
 
 		# Create the buttons
 		#   Create number buttons
@@ -292,7 +308,6 @@ class BasicCalculator():
 				self.operation_buttons.append(ctk.CTkButton(self.nums_and_operations_frame, 
 				text = i,font=self.my_font, width=130,height=50, 
 				fg_color='#2a4993', hover_color='#233F83'))
-
 		# Place the buttons
 		#   Place operations buttons
 		index = 4    
@@ -313,11 +328,26 @@ class BasicCalculator():
 				self.number_buttons[index].grid(row=i,column=j, padx=1, pady=1, sticky='nsew')
 				index += 1
 
-		#The app starts with the Blue theme by default (later changing to the OS theme)
+		#The app starts with the Blue theme by default
 		self.settings_panel.switch3.toggle()
 
 	# Functions
-	def change_application_theme(self, value: int):
+
+	def read_history(self, filename: str) -> str:
+		'''Reads the operations saved in the correspondant history file'''
+		
+		content = ''
+		with open(filename, 'r') as file:
+			content = file.read()
+		return content
+	
+	def save_operation_in_history(self, result: str) -> None:
+		'''Saves the last operation made after pressing the \'=\' button'''
+
+		with open('standard_history.txt', 'a') as f:
+			f.write(f'{self.operations_history_statement.get()} = {result}\n')			
+
+	def change_application_theme(self, value: int) -> None:
 		'''Method for changing the application theme according to the value,\n
 		which is given by pressing one of the CtkSwitches'''
 
@@ -389,6 +419,8 @@ class BasicCalculator():
 			text_color_settings = 'black'
  
 		self.window.configure(fg_color=fg_color_window_frame_panel)
+		self.history_panel_button.configure(fg_color=fg_color_slide_panel_button, hover_color=hv_color_nums)
+		self.history_panel.configure(fg_color = fg_color_slide_panels)
 		self.nums_and_operations_frame.configure(fg_color=fg_color_window_frame_panel)
 		self.results_frame.configure(fg_color=fg_color_results_frame_panel)
 		self.current_operation_statement_label.configure( text_color = text_color)
@@ -402,6 +434,7 @@ class BasicCalculator():
 				self.operation_buttons[i].configure(fg_color=fg_color_operations, hover_color=hv_color_operations, bg_color = bg_color_operations, text_color = text_color)
 		self.slide_panel.configure(fg_color = fg_color_slide_panels)
 		self.slide_panel_button.configure(fg_color=fg_color_slide_panel_button, hover_color=hv_color_nums)
+		self.slide_panel.standard_calculator_button.configure(fg_color = fg_color_slide_panels, hover_color = hv_color_settings_button, text_color = text_color_settings, bg_color = text_color)
 		self.slide_panel.areas_calculator_button.configure(fg_color = fg_color_slide_panels, hover_color = hv_color_settings_button, text_color = text_color_settings, bg_color = text_color)
 		self.slide_panel.settings_button.configure(fg_color = fg_color_setting_button, hover_color = hv_color_settings_button, text_color = text_color_settings)
 		self.slide_panel.divider.configure(fg_color = fg_color_divider)
@@ -413,7 +446,7 @@ class BasicCalculator():
 		self.settings_panel.switch2.configure(fg_color=fg_color_radio_buttons, text_color = text_color_settings)
 		self.settings_panel.switch3.configure(fg_color=fg_color_radio_buttons, text_color = text_color_settings)    
 
-	def manage_switches(self):
+	def manage_switches(self) -> None:
 		"""Deselects all the button in to_deactivate and sets the application\n
 		theme to the current selected button value"""
 
@@ -514,6 +547,11 @@ class BasicCalculator():
 				button.configure(state='normal')
 			self.side_panel_active = False
 
+	def manage_history_panel(self) -> None:
+		'''Manages the brother panels of the history slide panel'''
+
+		self.history_panel.animate()
+	
 	def manage_brother_panels(self) -> None:
 		'''Manages the brother panels of the main slide panel'''
 
@@ -636,6 +674,8 @@ class BasicCalculator():
 					else:
 						self.operations_history_statement.set('')
 						self.update_operations_history_statement(op_history_aux+current_statement_aux+stmt)
+						self.save_operation_in_history(self.current_operation_statement.get())
+						self.history.configure(label_text=self.read_history('standard_history.txt'))
 					self.operations_flag = True
 
 			#Validate if the user is giving an 'clear operations' input
