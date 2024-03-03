@@ -50,7 +50,3 @@ class Operation():
     def triangle_area(b:float,h:float) -> float:
         '''Returns a float value of the area of a triangle with a base b and a height h (b*h/2)'''
         return b*h/2
-    
-    def triangle_rectangle_area(b:float,h:float) -> float:
-        '''Returns a float value of the area of a triangle rectangle with a base b and a height h (b*h)'''
-        return b*h

@@ -258,7 +258,7 @@ class BasicCalculator():
 		self.history_panel_button = ctk.CTkButton(self.window, text = 'H', 
 		width=50,height=40,command = self.manage_history_panel, 
 		 fg_color='#7c87e7', hover_color='#6B78D3')
-		self.history_panel_button.place(relx = 0, rely = 0.2)
+		self.history_panel_button.place(relx = 0.15, rely = 0)
 		self.history = ctk.CTkScrollableFrame(master=self.history_panel, label_fg_color='black', label_text_color='white', label_text=self.read_history('standard_history.txt'))
 		self.history.place(relx=0.1, rely=0.1, relwidth = 1, relheight = 1)
 		#	Lift buttons and panels respectively

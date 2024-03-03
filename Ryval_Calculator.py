@@ -4,7 +4,7 @@ import customtkinter as ctk
 # Main Window
 window = ctk.CTk()
 window.title('Ryval Calculator')
-window.geometry('320x450')
+window.geometry('350x450')
 window.iconbitmap('ryval_calculator_icon.ico')
 window.minsize(320,450)
 
